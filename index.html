@@ -36,6 +36,44 @@ let d = Number(document.getElementById("c4").value);
 let avg = (a+b+c+d)/4;
 
 let res = "";
+let sug = "Improvement Suggestions:<br>";
+
+if(avg <= 2){
+    res = "Poor";
+}
+else if(avg <= 3){
+    res = "Average";
+}
+else if(avg <= 4){
+    res = "Good";
+}
+else{
+    res = "Excellent";
+}
+
+// Individual suggestions
+if(a < 3){
+    sug += "- Improve clarity of explanation<br>";
+}
+if(b < 3){
+    sug += "- Increase student engagement<br>";
+}
+if(c < 3){
+    sug += "- Improve communication skills<br>";
+}
+if(d < 3){
+    sug += "- Focus on better doubt solving<br>";
+}
+
+if(sug === "Improvement Suggestions:<br>"){
+    sug += "No major improvements needed. Great teaching!";
+}
+
+document.getElementById("result").innerHTML = "Result: " + res + " (Avg: " + avg.toFixed(2) + ")";
+document.getElementById("suggestion").innerHTML = sug;
+let avg = (a+b+c+d)/4;
+
+let res = "";
 let sug = "";
 
 if(avg <= 2){
