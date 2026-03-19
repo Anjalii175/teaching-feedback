@@ -114,6 +114,40 @@ document.getElementById("result").innerHTML =
 
 document.getElementById("suggestion").innerHTML = suggestion;
     document.getElementById("suggestion").innerHTML = suggestion;
+    document.getElementById("suggestion").innerHTML = suggestion;
+
+// 👉 YAHAN SE GRAPH CODE START
+
+if(window.chart){
+    window.chart.destroy();
+}
+
+const canvas = document.getElementById("myChart");
+
+if(canvas){
+    const ctx = canvas.getContext("2d");
+
+    window.chart = new Chart(ctx, {
+        type: "bar",
+        data: {
+            labels: ["Clarity", "Engagement", "Communication", "Doubt Solving"],
+            datasets: [{
+                label: "Ratings",
+                data: [clarity, engagement, communication, doubt]
+            }]
+        },
+        options: {
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    max: 5
+                }
+            }
+        }
+    });
+}
+
+// 👉 GRAPH CODE END
 
 if(window.chart){
     window.chart.destroy();
