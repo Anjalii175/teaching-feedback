@@ -3,22 +3,24 @@
 <head>
 <title>Research-Based Teaching Effectiveness</title>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2"></script>
 <style>
 body { font-family: Arial; text-align: center; margin: 30px; background-color: #f0f0f0; }
 h1 { color: darkblue; }
-.box { margin: 10px; }
+h3 { color: #333; }
 </style>
 </head>
 <body>
 
-<h1>Teaching Effectiveness Result (Research-Based)</h1>
-<p>Website automatically calculates teaching effectiveness based on research dataset.</p>
+<h1>Teaching Effectiveness (Research-Based)</h1>
+<p>Website calculates teaching effectiveness based on research dataset</p>
 
 <h3 id="result"></h3>
 <canvas id="myChart" width="400" height="250"></canvas>
 
 <script>
-// Sample research dataset (replace with your real CSV/JSON)
+// ----- Example research dataset -----
+// Replace this with your real dataset (CSV converted to JSON)
 const researchData = [
     {clarity:4, engagement:3, communication:4, doubt:5},
     {clarity:3, engagement:4, communication:3, doubt:4},
@@ -26,7 +28,7 @@ const researchData = [
     {clarity:2, engagement:3, communication:3, doubt:2}
 ];
 
-// Step 1: Calculate average score for each parameter
+// ----- Step 1: Calculate average score per parameter -----
 let sumClarity=0, sumEng=0, sumComm=0, sumDoubt=0;
 researchData.forEach(d => {
     sumClarity += d.clarity;
@@ -41,20 +43,21 @@ let avgEng = sumEng/n;
 let avgComm = sumComm/n;
 let avgDoubt = sumDoubt/n;
 
-// Step 2: Overall average
+// ----- Step 2: Overall average -----
 let overallAvg = (avgClarity + avgEng + avgComm + avgDoubt)/4;
 
-// Step 3: Determine category
+// ----- Step 3: Determine category -----
 let resultText = "";
-if(overallAvg<=2) resultText="Poor";
-else if(overallAvg<=3) resultText="Average";
-else if(overallAvg<=4) resultText="Good";
+if(overallAvg <= 2) resultText="Poor";
+else if(overallAvg <= 3) resultText="Average";
+else if(overallAvg <= 4) resultText="Good";
 else resultText="Excellent";
 
+// ----- Step 4: Display result -----
 document.getElementById("result").innerHTML = 
-"Teaching Effectiveness: " + resultText + " (Average Score: " + overallAvg.toFixed(2) + ")";
+"Teaching Effectiveness: <b>" + resultText + "</b> (Average Score: " + overallAvg.toFixed(2) + ")";
 
-// Step 4: Draw graph
+// ----- Step 5: Draw graph -----
 const ctx = document.getElementById("myChart").getContext("2d");
 new Chart(ctx,{
     type:'bar',
@@ -68,10 +71,22 @@ new Chart(ctx,{
     },
     options:{
         responsive:true,
+        plugins:{
+            legend:{ display:false },
+            datalabels:{
+                display:true,
+                color:'black',
+                anchor:'end',
+                align:'end',
+                font:{ weight:'bold', size:14 }
+            }
+        },
         scales:{ y:{ beginAtZero:true, max:5, ticks:{ stepSize:1 } } },
         animation:{ duration:1000, easing:'easeOutBounce' }
-    }
+    },
+    plugins:[ChartDataLabels]
 });
 </script>
+
 </body>
 </html>
