@@ -36,12 +36,13 @@ button:hover { background-color: darkblue; }
 <h3>Graphical Representation</h3>
 <canvas id="myChart" width="400" height="250"></canvas>
 
+<!-- Chart.js library -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <script>
 let chartInstance = null;
 
-// Use soft pastel colors for bars
+// Soft pastel colors for bars
 const softColors = ['#3498db', '#2ecc71', '#9b59b6', '#f39c12']; // Blue, Green, Purple, Orange
 
 function calculate() {
@@ -52,12 +53,14 @@ function calculate() {
 
     let average = (clarity + engagement + communication + doubt) / 4;
 
+    // Result
     let result = "";
     if(average <= 2) result = "Poor";
     else if(average <= 3) result = "Average";
     else if(average <= 4) result = "Good";
     else result = "Excellent";
 
+    // Suggestions
     let suggestion = "<b>Improvement Suggestions:</b><br>";
     if(clarity < 3) suggestion += "- Use simpler explanations and examples<br>";
     if(engagement < 3) suggestion += "- Increase interaction with students<br>";
@@ -68,9 +71,11 @@ function calculate() {
     document.getElementById("result").innerHTML = "Result: " + result + " (Avg Score: " + average.toFixed(2) + ")";
     document.getElementById("suggestion").innerHTML = suggestion;
 
+    // Destroy previous chart if exists
     if(chartInstance) chartInstance.destroy();
 
     const ctx = document.getElementById("myChart").getContext("2d");
+
     chartInstance = new Chart(ctx, {
         type: 'bar',
         data: {
@@ -84,12 +89,30 @@ function calculate() {
         options: {
             responsive: true,
             animation: { duration: 1000, easing: 'easeOutBounce' },
-            scales: { y: { beginAtZero: true, max: 5, ticks: { stepSize: 1 } } }
-        }
+            plugins: {
+                legend: { display: false },
+                tooltip: { enabled: true },
+                datalabels: {
+                    display: true,
+                    color: 'black',
+                    anchor: 'end',
+                    align: 'end',
+                    font: { weight: 'bold', size: 14 }
+                }
+            },
+            scales: {
+                y: { beginAtZero: true, max: 5, ticks: { stepSize: 1 } }
+            }
+        },
+        plugins: [ChartDataLabels]
     });
 }
 
-window.onload = calculate;
+// Load ChartDataLabels plugin for numeric labels
+let script = document.createElement('script');
+script.src = 'https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2';
+script.onload = () => { window.onload = calculate; };
+document.head.appendChild(script);
 </script>
 
 </body>
