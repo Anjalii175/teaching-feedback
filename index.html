@@ -15,7 +15,7 @@ button { padding: 10px 20px; background-color: blue; color: white; border: none;
 
 <h1>AI-Based Teaching Feedback System</h1>
 
-<p>This system evaluates teaching effectiveness using parameters like clarity, engagement, communication, and doubt solving.</p>
+<p>This system evaluates teaching effectiveness using clarity, engagement, communication, and doubt solving.</p>
 
 <hr style="width:60%; margin:20px auto;">
 
@@ -33,14 +33,15 @@ button { padding: 10px 20px; background-color: blue; color: white; border: none;
 <p id="suggestion"></p>
 
 <h3>Graphical Representation</h3>
-<canvas id="myChart" width="300" height="200"></canvas>
+<canvas id="myChart" width="400" height="250"></canvas>
 
 <!-- Chart.js library -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <script>
-function calculate() {
+let chartInstance = null;
 
+function calculate() {
     let clarity = Number(document.getElementById("c1").value);
     let engagement = Number(document.getElementById("c2").value);
     let communication = Number(document.getElementById("c3").value);
@@ -48,12 +49,14 @@ function calculate() {
 
     let average = (clarity + engagement + communication + doubt) / 4;
 
+    // Result
     let result = "";
     if(average <= 2) result = "Poor";
     else if(average <= 3) result = "Average";
     else if(average <= 4) result = "Good";
     else result = "Excellent";
 
+    // Suggestions
     let suggestion = "<b>Improvement Suggestions:</b><br>";
     if(clarity < 3) suggestion += "- Use simpler explanations and examples<br>";
     if(engagement < 3) suggestion += "- Increase interaction with students<br>";
@@ -64,22 +67,23 @@ function calculate() {
     document.getElementById("result").innerHTML = "Result: " + result + " (Avg Score: " + average.toFixed(2) + ")";
     document.getElementById("suggestion").innerHTML = suggestion;
 
-    // Graph
-    if(window.chart) window.chart.destroy();
+    // Destroy previous chart if exists
+    if(chartInstance) chartInstance.destroy();
 
+    // Create new chart
     const ctx = document.getElementById("myChart").getContext("2d");
-
-    window.chart = new Chart(ctx, {
+    chartInstance = new Chart(ctx, {
         type: "bar",
         data: {
             labels: ["Clarity", "Engagement", "Communication", "Doubt Solving"],
             datasets: [{
                 label: "Ratings",
                 data: [clarity, engagement, communication, doubt],
-                backgroundColor: ["red","green","blue","orange"]
+                backgroundColor: ["#FF6384","#36A2EB","#FFCE56","#4BC0C0"]
             }]
         },
         options: {
+            responsive: true,
             scales: {
                 y: { beginAtZero: true, max: 5 }
             }
