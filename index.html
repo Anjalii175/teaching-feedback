@@ -42,14 +42,13 @@ button:hover { background-color: darkblue; }
 <script>
 let chartInstance = null;
 
-// Function to get color based on score
+// Color based on score
 function getColor(score){
     if(score <= 2) return 'red';
     else if(score === 3) return 'yellow';
     else return 'green';
 }
 
-// Main calculation function
 function calculate() {
     let clarity = Number(document.getElementById("c1").value);
     let engagement = Number(document.getElementById("c2").value);
@@ -58,7 +57,7 @@ function calculate() {
 
     let average = (clarity + engagement + communication + doubt) / 4;
 
-    // Result text
+    // Result
     let result = "";
     if(average <= 2) result = "Poor";
     else if(average <= 3) result = "Average";
@@ -97,30 +96,19 @@ function calculate() {
         },
         options: {
             responsive: true,
-            plugins: {
-                legend: { display: false },
-                tooltip: { enabled: true },
-                datalabels: {
-                    display: true,
-                    color: 'black',
-                    anchor: 'end',
-                    align: 'end'
-                }
+            animation: {
+                duration: 1000,
+                easing: 'easeOutBounce'
             },
-            animation: { duration: 1000, easing: 'easeOutBounce' },
             scales: {
                 y: { beginAtZero: true, max: 5, ticks: { stepSize: 1 } }
             }
-        },
-        plugins: [ChartDataLabels]
+        }
     });
 }
 
-// Load ChartDataLabels plugin
-let script = document.createElement('script');
-script.src = 'https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2';
-script.onload = () => { window.onload = calculate; }; // Initial graph
-document.head.appendChild(script);
+// Show initial graph on page load
+window.onload = calculate;
 </script>
 
 </body>
