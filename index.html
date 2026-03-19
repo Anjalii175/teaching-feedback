@@ -36,18 +36,13 @@ button:hover { background-color: darkblue; }
 <h3>Graphical Representation</h3>
 <canvas id="myChart" width="400" height="250"></canvas>
 
-<!-- Chart.js library -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <script>
 let chartInstance = null;
 
-// Color based on score
-function getColor(score){
-    if(score <= 2) return 'red';
-    else if(score === 3) return 'yellow';
-    else return 'green';
-}
+// Use soft pastel colors for bars
+const softColors = ['#3498db', '#2ecc71', '#9b59b6', '#f39c12']; // Blue, Green, Purple, Orange
 
 function calculate() {
     let clarity = Number(document.getElementById("c1").value);
@@ -57,14 +52,12 @@ function calculate() {
 
     let average = (clarity + engagement + communication + doubt) / 4;
 
-    // Result
     let result = "";
     if(average <= 2) result = "Poor";
     else if(average <= 3) result = "Average";
     else if(average <= 4) result = "Good";
     else result = "Excellent";
 
-    // Suggestions
     let suggestion = "<b>Improvement Suggestions:</b><br>";
     if(clarity < 3) suggestion += "- Use simpler explanations and examples<br>";
     if(engagement < 3) suggestion += "- Increase interaction with students<br>";
@@ -75,7 +68,6 @@ function calculate() {
     document.getElementById("result").innerHTML = "Result: " + result + " (Avg Score: " + average.toFixed(2) + ")";
     document.getElementById("suggestion").innerHTML = suggestion;
 
-    // Destroy previous chart if exists
     if(chartInstance) chartInstance.destroy();
 
     const ctx = document.getElementById("myChart").getContext("2d");
@@ -86,28 +78,17 @@ function calculate() {
             datasets: [{
                 label: 'Ratings',
                 data: [clarity, engagement, communication, doubt],
-                backgroundColor: [
-                    getColor(clarity),
-                    getColor(engagement),
-                    getColor(communication),
-                    getColor(doubt)
-                ]
+                backgroundColor: softColors
             }]
         },
         options: {
             responsive: true,
-            animation: {
-                duration: 1000,
-                easing: 'easeOutBounce'
-            },
-            scales: {
-                y: { beginAtZero: true, max: 5, ticks: { stepSize: 1 } }
-            }
+            animation: { duration: 1000, easing: 'easeOutBounce' },
+            scales: { y: { beginAtZero: true, max: 5, ticks: { stepSize: 1 } } }
         }
     });
 }
 
-// Show initial graph on page load
 window.onload = calculate;
 </script>
 
