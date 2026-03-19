@@ -3,19 +3,20 @@
 <head>
 <title>Teaching Feedback System</title>
 <style>
-body { font-family: Arial; text-align: center; margin: 30px; background-color: lightgray; }
+body { font-family: Arial; text-align: center; margin: 30px; background-color: #f0f0f0; }
 h1 { color: darkblue; }
 p { color: black; }
 .box { margin: 10px; }
 input { width: 50px; padding: 5px; }
-button { padding: 10px 20px; background-color: blue; color: white; border: none; border-radius: 5px; }
+button { padding: 10px 20px; background-color: blue; color: white; border: none; border-radius: 5px; cursor: pointer; }
+button:hover { background-color: darkblue; }
 </style>
 </head>
 <body>
 
 <h1>AI-Based Teaching Feedback System</h1>
 
-<p>This system evaluates teaching effectiveness using clarity, engagement, communication, and doubt solving.</p>
+<p>Evaluate teaching effectiveness using clarity, engagement, communication, and doubt solving.</p>
 
 <hr style="width:60%; margin:20px auto;">
 
@@ -35,11 +36,16 @@ button { padding: 10px 20px; background-color: blue; color: white; border: none;
 <h3>Graphical Representation</h3>
 <canvas id="myChart" width="400" height="250"></canvas>
 
-<!-- Chart.js library -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <script>
 let chartInstance = null;
+
+function getColor(score){
+    if(score <= 2) return 'red';
+    else if(score === 3) return 'yellow';
+    else return 'green';
+}
 
 function calculate() {
     let clarity = Number(document.getElementById("c1").value);
@@ -49,14 +55,12 @@ function calculate() {
 
     let average = (clarity + engagement + communication + doubt) / 4;
 
-    // Result
     let result = "";
     if(average <= 2) result = "Poor";
     else if(average <= 3) result = "Average";
     else if(average <= 4) result = "Good";
     else result = "Excellent";
 
-    // Suggestions
     let suggestion = "<b>Improvement Suggestions:</b><br>";
     if(clarity < 3) suggestion += "- Use simpler explanations and examples<br>";
     if(engagement < 3) suggestion += "- Increase interaction with students<br>";
@@ -70,8 +74,8 @@ function calculate() {
     // Destroy previous chart if exists
     if(chartInstance) chartInstance.destroy();
 
-    // Create new chart
     const ctx = document.getElementById("myChart").getContext("2d");
+
     chartInstance = new Chart(ctx, {
         type: "bar",
         data: {
@@ -79,13 +83,21 @@ function calculate() {
             datasets: [{
                 label: "Ratings",
                 data: [clarity, engagement, communication, doubt],
-                backgroundColor: ["#FF6384","#36A2EB","#FFCE56","#4BC0C0"]
+                backgroundColor: [getColor(clarity), getColor(engagement), getColor(communication), getColor(doubt)]
             }]
         },
         options: {
             responsive: true,
+            animation: {
+                duration: 1000,
+                easing: 'easeOutBounce'
+            },
             scales: {
-                y: { beginAtZero: true, max: 5 }
+                y: {
+                    beginAtZero: true,
+                    max: 5,
+                    ticks: { stepSize: 1 }
+                }
             }
         }
     });
