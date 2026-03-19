@@ -22,10 +22,10 @@ button:hover { background-color: darkblue; }
 
 <h2>Teaching Effectiveness Evaluation</h2>
 
-<div class="box">Clarity: <input type="number" id="c1" min="1" max="5"></div>
-<div class="box">Engagement: <input type="number" id="c2" min="1" max="5"></div>
-<div class="box">Communication: <input type="number" id="c3" min="1" max="5"></div>
-<div class="box">Doubt Solving: <input type="number" id="c4" min="1" max="5"></div>
+<div class="box">Clarity: <input type="number" id="c1" min="1" max="5" value="3"></div>
+<div class="box">Engagement: <input type="number" id="c2" min="1" max="5" value="3"></div>
+<div class="box">Communication: <input type="number" id="c3" min="1" max="5" value="3"></div>
+<div class="box">Doubt Solving: <input type="number" id="c4" min="1" max="5" value="3"></div>
 
 <br>
 <button onclick="calculate()">Check Result</button>
@@ -36,18 +36,22 @@ button:hover { background-color: darkblue; }
 <h3>Graphical Representation</h3>
 <canvas id="myChart" width="400" height="250"></canvas>
 
+<!-- Load Chart.js library first -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <script>
 let chartInstance = null;
 
+// Function to get color based on score
 function getColor(score){
     if(score <= 2) return 'red';
     else if(score === 3) return 'yellow';
     else return 'green';
 }
 
+// Main calculation function
 function calculate() {
+    // Get values
     let clarity = Number(document.getElementById("c1").value);
     let engagement = Number(document.getElementById("c2").value);
     let communication = Number(document.getElementById("c3").value);
@@ -55,12 +59,14 @@ function calculate() {
 
     let average = (clarity + engagement + communication + doubt) / 4;
 
+    // Result
     let result = "";
     if(average <= 2) result = "Poor";
     else if(average <= 3) result = "Average";
     else if(average <= 4) result = "Good";
     else result = "Excellent";
 
+    // Suggestions
     let suggestion = "<b>Improvement Suggestions:</b><br>";
     if(clarity < 3) suggestion += "- Use simpler explanations and examples<br>";
     if(engagement < 3) suggestion += "- Increase interaction with students<br>";
@@ -74,16 +80,21 @@ function calculate() {
     // Destroy previous chart if exists
     if(chartInstance) chartInstance.destroy();
 
+    // Create new chart
     const ctx = document.getElementById("myChart").getContext("2d");
-
     chartInstance = new Chart(ctx, {
-        type: "bar",
+        type: 'bar',
         data: {
-            labels: ["Clarity", "Engagement", "Communication", "Doubt Solving"],
+            labels: ['Clarity', 'Engagement', 'Communication', 'Doubt Solving'],
             datasets: [{
-                label: "Ratings",
+                label: 'Ratings',
                 data: [clarity, engagement, communication, doubt],
-                backgroundColor: [getColor(clarity), getColor(engagement), getColor(communication), getColor(doubt)]
+                backgroundColor: [
+                    getColor(clarity),
+                    getColor(engagement),
+                    getColor(communication),
+                    getColor(doubt)
+                ]
             }]
         },
         options: {
@@ -102,6 +113,9 @@ function calculate() {
         }
     });
 }
+
+// Automatically show initial graph
+window.onload = calculate;
 </script>
 
 </body>
