@@ -1,106 +1,59 @@
-<!DOCTYPE html>
-<html>
-<head>
-<title>Teaching Feedback System</title>
-<style>
-body { font-family: Arial; text-align: center; margin: 30px; }
-.box { margin: 10px; }
-input { width: 50px; }
-button { padding: 10px; }
-</style>
-</head>
-
-<body>
-<h1 style="color:red;">AI-Based Teaching Feedback System</h1>
-<p style="color:gray; font-size:16px;">
-This system evaluates teaching effectiveness based on student feedback and provides improvement suggestions.
-</p>
-<hr style="width:60%; margin:20px auto;">
-<h2>Teaching Effectiveness Evaluation</h2>
-
-<div class="box">Clarity: <input type="number" id="c1" min="1" max="5"></div>
-<div class="box">Engagement: <input type="number" id="c2" min="1" max="5"></div>
-<div class="box">Communication: <input type="number" id="c3" min="1" max="5"></div>
-<div class="box">Doubt Solving: <input type="number" id="c4" min="1" max="5"></div>
-
-<br>
-
-<button onclick="calculate()">Check Result</button>
-
-<h3 id="result"></h3>
-<p id="suggestion"></p>
-
 <script>
 function calculate() {
-let a = Number(document.getElementById("c1").value);
-let b = Number(document.getElementById("c2").value);
-let c = Number(document.getElementById("c3").value);
-let d = Number(document.getElementById("c4").value);
 
-let avg = (a+b+c+d)/4;
+// taking input values
+let clarity = Number(document.getElementById("c1").value);
+let engagement = Number(document.getElementById("c2").value);
+let communication = Number(document.getElementById("c3").value);
+let doubt = Number(document.getElementById("c4").value);
 
-let res = "";
-let sug = "Improvement Suggestions:<br>";
+// calculating average score
+let average = (clarity + engagement + communication + doubt) / 4;
 
-if(avg <= 2){
-    res = "Poor";
+// deciding result
+let result = "";
+if(average <= 2){
+    result = "Poor";
 }
-else if(avg <= 3){
-    res = "Average";
+else if(average <= 3){
+    result = "Average";
 }
-else if(avg <= 4){
-    res = "Good";
+else if(average <= 4){
+    result = "Good";
 }
 else{
-    res = "Excellent";
+    result = "Excellent";
 }
 
-// Individual suggestions
-if(a < 3){
-    sug += "- Improve clarity of explanation<br>";
+// suggestions based on weak areas
+let suggestion = "<b>Improvement Suggestions:</b><br>";
+
+if(clarity < 3){
+    suggestion += "- Use simpler explanations and examples<br>";
 }
-if(b < 3){
-    sug += "- Increase student engagement<br>";
+if(engagement < 3){
+    suggestion += "- Increase interaction with students<br>";
 }
-if(c < 3){
-    sug += "- Improve communication skills<br>";
+if(communication < 3){
+    suggestion += "- Improve communication clarity<br>";
 }
-if(d < 3){
-    sug += "- Focus on better doubt solving<br>";
+if(doubt < 3){
+    suggestion += "- Give more time for doubt solving<br>";
 }
 
-if(sug === "Improvement Suggestions:<br>"){
-    sug += "No major improvements needed. Great teaching!";
+// if everything is good
+if(suggestion === "<b>Improvement Suggestions:</b><br>"){
+    suggestion += "No major improvement needed. Teaching is effective.";
 }
 
-document.getElementById("result").innerHTML = "Result: " + res + " (Avg: " + avg.toFixed(2) + ")";
-document.getElementById("suggestion").innerHTML = sug;
-let avg = (a+b+c+d)/4;
+// display output
+document.getElementById("result").innerHTML =
+"Result: " + result + " (Avg Score: " + average.toFixed(2) + ")";
 
-let res = "";
-let sug = "";
+document.getElementById("suggestion").innerHTML = suggestion;
 
-if(avg <= 2){
-    res = "Poor";
-    sug = "Improve clarity and communication.";
-}
-else if(avg <= 3){
-    res = "Average";
-    sug = "Work on engagement and doubt solving.";
-}
-else if(avg <= 4){
-    res = "Good";
-    sug = "Teaching is satisfactory.";
-}
-else{
-    res = "Excellent";
-    sug = "Great teaching performance!";
-}
-
-document.getElementById("result").innerHTML = "Result: " + res + " (Avg: " + avg.toFixed(2) + ")";
-document.getElementById("suggestion").innerHTML = sug;
 }
 </script>
 
-</body>
-</html>
+
+    
