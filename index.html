@@ -1,17 +1,80 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Teaching Feedback System</title>
+
+<style>
+body {
+    font-family: Arial;
+    text-align: center;
+    margin: 30px;
+    background-color: lightgray;
+}
+
+h1 {
+    color: darkblue;
+}
+
+p {
+    color: black;
+}
+
+.box {
+    margin: 10px;
+}
+
+input {
+    width: 50px;
+    padding: 5px;
+}
+
+button {
+    padding: 10px 20px;
+    background-color: blue;
+    color: white;
+    border: none;
+    border-radius: 5px;
+}
+</style>
+</head>
+
+<body>
+
+<h1>AI-Based Teaching Feedback System</h1>
+
+<p>
+This system evaluates teaching effectiveness using parameters like clarity, engagement, communication, and doubt solving.
+It also provides improvement suggestions based on feedback.
+</p>
+
+<hr style="width:60%; margin:20px auto;">
+
+<h2>Teaching Effectiveness Evaluation</h2>
+
+<div class="box">Clarity: <input type="number" id="c1" min="1" max="5"></div>
+<div class="box">Engagement: <input type="number" id="c2" min="1" max="5"></div>
+<div class="box">Communication: <input type="number" id="c3" min="1" max="5"></div>
+<div class="box">Doubt Solving: <input type="number" id="c4" min="1" max="5"></div>
+
+<br>
+
+<button onclick="calculate()">Check Result</button>
+
+<h3 id="result"></h3>
+<p id="suggestion"></p>
+
 <script>
 function calculate() {
 
-// taking input values
 let clarity = Number(document.getElementById("c1").value);
 let engagement = Number(document.getElementById("c2").value);
 let communication = Number(document.getElementById("c3").value);
 let doubt = Number(document.getElementById("c4").value);
 
-// calculating average score
 let average = (clarity + engagement + communication + doubt) / 4;
 
-// deciding result
 let result = "";
+
 if(average <= 2){
     result = "Poor";
 }
@@ -25,7 +88,6 @@ else{
     result = "Excellent";
 }
 
-// suggestions based on weak areas
 let suggestion = "<b>Improvement Suggestions:</b><br>";
 
 if(clarity < 3){
@@ -41,12 +103,10 @@ if(doubt < 3){
     suggestion += "- Give more time for doubt solving<br>";
 }
 
-// if everything is good
 if(suggestion === "<b>Improvement Suggestions:</b><br>"){
     suggestion += "No major improvement needed. Teaching is effective.";
 }
 
-// display output
 document.getElementById("result").innerHTML =
 "Result: " + result + " (Avg Score: " + average.toFixed(2) + ")";
 
@@ -55,5 +115,5 @@ document.getElementById("suggestion").innerHTML = suggestion;
 }
 </script>
 
-
-    
+</body>
+</html>
