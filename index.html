@@ -2,50 +2,20 @@
 <html>
 <head>
 <title>Teaching Feedback System</title>
-
 <style>
-body {
-    font-family: Arial;
-    text-align: center;
-    margin: 30px;
-    background-color: lightgray;
-}
-
-h1 {
-    color: darkblue;
-}
-
-p {
-    color: black;
-}
-
-.box {
-    margin: 10px;
-}
-
-input {
-    width: 50px;
-    padding: 5px;
-}
-
-button {
-    padding: 10px 20px;
-    background-color: blue;
-    color: white;
-    border: none;
-    border-radius: 5px;
-}
+body { font-family: Arial; text-align: center; margin: 30px; background-color: lightgray; }
+h1 { color: darkblue; }
+p { color: black; }
+.box { margin: 10px; }
+input { width: 50px; padding: 5px; }
+button { padding: 10px 20px; background-color: blue; color: white; border: none; border-radius: 5px; }
 </style>
 </head>
-
 <body>
 
 <h1>AI-Based Teaching Feedback System</h1>
 
-<p>
-This system evaluates teaching effectiveness using parameters like clarity, engagement, communication, and doubt solving.
-It also provides improvement suggestions based on feedback.
-</p>
+<p>This system evaluates teaching effectiveness using parameters like clarity, engagement, communication, and doubt solving.</p>
 
 <hr style="width:60%; margin:20px auto;">
 
@@ -57,75 +27,47 @@ It also provides improvement suggestions based on feedback.
 <div class="box">Doubt Solving: <input type="number" id="c4" min="1" max="5"></div>
 
 <br>
-
 <button onclick="calculate()">Check Result</button>
 
 <h3 id="result"></h3>
 <p id="suggestion"></p>
-    <h3>Graphical Representation</h3>
+
+<h3>Graphical Representation</h3>
 <canvas id="myChart" width="300" height="200"></canvas>
+
+<!-- Chart.js library -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <script>
 function calculate() {
 
-let clarity = Number(document.getElementById("c1").value);
-let engagement = Number(document.getElementById("c2").value);
-let communication = Number(document.getElementById("c3").value);
-let doubt = Number(document.getElementById("c4").value);
+    let clarity = Number(document.getElementById("c1").value);
+    let engagement = Number(document.getElementById("c2").value);
+    let communication = Number(document.getElementById("c3").value);
+    let doubt = Number(document.getElementById("c4").value);
 
-let average = (clarity + engagement + communication + doubt) / 4;
+    let average = (clarity + engagement + communication + doubt) / 4;
 
-let result = "";
+    let result = "";
+    if(average <= 2) result = "Poor";
+    else if(average <= 3) result = "Average";
+    else if(average <= 4) result = "Good";
+    else result = "Excellent";
 
-if(average <= 2){
-    result = "Poor";
-}
-else if(average <= 3){
-    result = "Average";
-}
-else if(average <= 4){
-    result = "Good";
-}
-else{
-    result = "Excellent";
-}
+    let suggestion = "<b>Improvement Suggestions:</b><br>";
+    if(clarity < 3) suggestion += "- Use simpler explanations and examples<br>";
+    if(engagement < 3) suggestion += "- Increase interaction with students<br>";
+    if(communication < 3) suggestion += "- Improve communication clarity<br>";
+    if(doubt < 3) suggestion += "- Give more time for doubt solving<br>";
+    if(suggestion === "<b>Improvement Suggestions:</b><br>") suggestion += "No major improvement needed. Teaching is effective.";
 
-let suggestion = "<b>Improvement Suggestions:</b><br>";
-
-if(clarity < 3){
-    suggestion += "- Use simpler explanations and examples<br>";
-}
-if(engagement < 3){
-    suggestion += "- Increase interaction with students<br>";
-}
-if(communication < 3){
-    suggestion += "- Improve communication clarity<br>";
-}
-if(doubt < 3){
-    suggestion += "- Give more time for doubt solving<br>";
-}
-
-if(suggestion === "<b>Improvement Suggestions:</b><br>"){
-    suggestion += "No major improvement needed. Teaching is effective.";
-}
-
-document.getElementById("result").innerHTML =
-"Result: " + result + " (Avg Score: " + average.toFixed(2) + ")";
-
-document.getElementById("suggestion").innerHTML = suggestion;
-    document.getElementById("suggestion").innerHTML = suggestion;
+    document.getElementById("result").innerHTML = "Result: " + result + " (Avg Score: " + average.toFixed(2) + ")";
     document.getElementById("suggestion").innerHTML = suggestion;
 
-// 👉 YAHAN SE GRAPH CODE START
+    // Graph
+    if(window.chart) window.chart.destroy();
 
-if(window.chart){
-    window.chart.destroy();
-}
-
-const canvas = document.getElementById("myChart");
-
-if(canvas){
-    const ctx = canvas.getContext("2d");
+    const ctx = document.getElementById("myChart").getContext("2d");
 
     window.chart = new Chart(ctx, {
         type: "bar",
@@ -133,41 +75,18 @@ if(canvas){
             labels: ["Clarity", "Engagement", "Communication", "Doubt Solving"],
             datasets: [{
                 label: "Ratings",
-                data: [clarity, engagement, communication, doubt]
+                data: [clarity, engagement, communication, doubt],
+                backgroundColor: ["red","green","blue","orange"]
             }]
         },
         options: {
             scales: {
-                y: {
-                    beginAtZero: true,
-                    max: 5
-                }
+                y: { beginAtZero: true, max: 5 }
             }
         }
     });
 }
-
-// 👉 GRAPH CODE END
-
-if(window.chart){
-    window.chart.destroy();
-}
-
-let ctx = document.getElementById('myChart').getContext('2d');
-
-window.chart = new Chart(ctx, {
-    type: 'bar',
-    data: {
-        labels: ['Clarity', 'Engagement', 'Communication', 'Doubt Solving'],
-        datasets: [{
-            label: 'Ratings',
-            data: [clarity, engagement, communication, doubt]
-        }]
-    }
-});
-
-}
-</script src="https://cdn.jsdelivr.net/npm/chart.js"></script>>
+</script>
 
 </body>
 </html>
