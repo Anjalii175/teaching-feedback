@@ -1,119 +1,77 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>Teaching Feedback System</title>
+<title>Research-Based Teaching Effectiveness</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <style>
 body { font-family: Arial; text-align: center; margin: 30px; background-color: #f0f0f0; }
 h1 { color: darkblue; }
-p { color: black; }
 .box { margin: 10px; }
-input { width: 50px; padding: 5px; }
-button { padding: 10px 20px; background-color: blue; color: white; border: none; border-radius: 5px; cursor: pointer; }
-button:hover { background-color: darkblue; }
 </style>
 </head>
 <body>
 
-<h1>AI-Based Teaching Feedback System</h1>
-
-<p>Evaluate teaching effectiveness using clarity, engagement, communication, and doubt solving.</p>
-
-<hr style="width:60%; margin:20px auto;">
-
-<h2>Teaching Effectiveness Evaluation</h2>
-
-<div class="box">Clarity: <input type="number" id="c1" min="1" max="5" value="3"></div>
-<div class="box">Engagement: <input type="number" id="c2" min="1" max="5" value="3"></div>
-<div class="box">Communication: <input type="number" id="c3" min="1" max="5" value="3"></div>
-<div class="box">Doubt Solving: <input type="number" id="c4" min="1" max="5" value="3"></div>
-
-<br>
-<button onclick="calculate()">Check Result</button>
+<h1>Teaching Effectiveness Result (Research-Based)</h1>
+<p>Website automatically calculates teaching effectiveness based on research dataset.</p>
 
 <h3 id="result"></h3>
-<p id="suggestion"></p>
-
-<h3>Graphical Representation</h3>
 <canvas id="myChart" width="400" height="250"></canvas>
 
-<!-- Chart.js library -->
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
 <script>
-let chartInstance = null;
+// Sample research dataset (replace with your real CSV/JSON)
+const researchData = [
+    {clarity:4, engagement:3, communication:4, doubt:5},
+    {clarity:3, engagement:4, communication:3, doubt:4},
+    {clarity:5, engagement:5, communication:4, doubt:5},
+    {clarity:2, engagement:3, communication:3, doubt:2}
+];
 
-// Soft pastel colors for bars
-const softColors = ['#3498db', '#2ecc71', '#9b59b6', '#f39c12']; // Blue, Green, Purple, Orange
+// Step 1: Calculate average score for each parameter
+let sumClarity=0, sumEng=0, sumComm=0, sumDoubt=0;
+researchData.forEach(d => {
+    sumClarity += d.clarity;
+    sumEng += d.engagement;
+    sumComm += d.communication;
+    sumDoubt += d.doubt;
+});
 
-function calculate() {
-    let clarity = Number(document.getElementById("c1").value);
-    let engagement = Number(document.getElementById("c2").value);
-    let communication = Number(document.getElementById("c3").value);
-    let doubt = Number(document.getElementById("c4").value);
+let n = researchData.length;
+let avgClarity = sumClarity/n;
+let avgEng = sumEng/n;
+let avgComm = sumComm/n;
+let avgDoubt = sumDoubt/n;
 
-    let average = (clarity + engagement + communication + doubt) / 4;
+// Step 2: Overall average
+let overallAvg = (avgClarity + avgEng + avgComm + avgDoubt)/4;
 
-    // Result
-    let result = "";
-    if(average <= 2) result = "Poor";
-    else if(average <= 3) result = "Average";
-    else if(average <= 4) result = "Good";
-    else result = "Excellent";
+// Step 3: Determine category
+let resultText = "";
+if(overallAvg<=2) resultText="Poor";
+else if(overallAvg<=3) resultText="Average";
+else if(overallAvg<=4) resultText="Good";
+else resultText="Excellent";
 
-    // Suggestions
-    let suggestion = "<b>Improvement Suggestions:</b><br>";
-    if(clarity < 3) suggestion += "- Use simpler explanations and examples<br>";
-    if(engagement < 3) suggestion += "- Increase interaction with students<br>";
-    if(communication < 3) suggestion += "- Improve communication clarity<br>";
-    if(doubt < 3) suggestion += "- Give more time for doubt solving<br>";
-    if(suggestion === "<b>Improvement Suggestions:</b><br>") suggestion += "No major improvement needed. Teaching is effective.";
+document.getElementById("result").innerHTML = 
+"Teaching Effectiveness: " + resultText + " (Average Score: " + overallAvg.toFixed(2) + ")";
 
-    document.getElementById("result").innerHTML = "Result: " + result + " (Avg Score: " + average.toFixed(2) + ")";
-    document.getElementById("suggestion").innerHTML = suggestion;
-
-    // Destroy previous chart if exists
-    if(chartInstance) chartInstance.destroy();
-
-    const ctx = document.getElementById("myChart").getContext("2d");
-
-    chartInstance = new Chart(ctx, {
-        type: 'bar',
-        data: {
-            labels: ['Clarity', 'Engagement', 'Communication', 'Doubt Solving'],
-            datasets: [{
-                label: 'Ratings',
-                data: [clarity, engagement, communication, doubt],
-                backgroundColor: softColors
-            }]
-        },
-        options: {
-            responsive: true,
-            animation: { duration: 1000, easing: 'easeOutBounce' },
-            plugins: {
-                legend: { display: false },
-                tooltip: { enabled: true },
-                datalabels: {
-                    display: true,
-                    color: 'black',
-                    anchor: 'end',
-                    align: 'end',
-                    font: { weight: 'bold', size: 14 }
-                }
-            },
-            scales: {
-                y: { beginAtZero: true, max: 5, ticks: { stepSize: 1 } }
-            }
-        },
-        plugins: [ChartDataLabels]
-    });
-}
-
-// Load ChartDataLabels plugin for numeric labels
-let script = document.createElement('script');
-script.src = 'https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2';
-script.onload = () => { window.onload = calculate; };
-document.head.appendChild(script);
+// Step 4: Draw graph
+const ctx = document.getElementById("myChart").getContext("2d");
+new Chart(ctx,{
+    type:'bar',
+    data:{
+        labels:['Clarity','Engagement','Communication','Doubt Solving'],
+        datasets:[{
+            label:'Average Ratings',
+            data:[avgClarity, avgEng, avgComm, avgDoubt],
+            backgroundColor:['#3498db','#2ecc71','#9b59b6','#f39c12']
+        }]
+    },
+    options:{
+        responsive:true,
+        scales:{ y:{ beginAtZero:true, max:5, ticks:{ stepSize:1 } } },
+        animation:{ duration:1000, easing:'easeOutBounce' }
+    }
+});
 </script>
-
 </body>
 </html>
