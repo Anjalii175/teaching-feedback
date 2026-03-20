@@ -8,65 +8,53 @@
 <style>
 body {
     font-family: Arial;
-    margin: 0;
+    text-align: center;
+    margin: 30px;
     background-color: #f2f2f2;
 }
 
-.navbar {
-    background: blue;
-    color: white;
-    padding: 15px;
-    text-align: center;
-}
-
-.section {
-    padding: 30px;
-    text-align: center;
+h1 {
+    color: darkblue;
 }
 
 .box {
     margin: 10px;
 }
 
-button {
-    padding: 10px 20px;
-    background: blue;
-    color: white;
-    border: none;
-}
-
 input {
     width: 50px;
+    padding: 5px;
+}
+
+button {
+    padding: 10px 20px;
+    background-color: blue;
+    color: white;
+    border: none;
+    border-radius: 5px;
+}
+
+#bar {
+    height: 20px;
+    width: 0%;
+    background: red;
+    transition: 0.5s;
 }
 </style>
 </head>
 
 <body>
 
-<div class="navbar">
-<h2>Teaching Feedback Analysis System</h2>
-</div>
+<h1>AI-Based Teaching Feedback System</h1>
 
-<div class="section">
-<h3>About Project</h3>
 <p>
-This project analyzes teaching effectiveness using student feedback. 
-It helps in identifying strengths and areas of improvement in teaching.
+This website helps in analyzing teaching effectiveness using student feedback.
+It calculates results, shows graphs, and provides improvement suggestions.
 </p>
-</div>
 
-<div class="section">
-<h3>How It Works</h3>
-<p>
-1. Students give feedback ratings<br>
-2. System calculates average score<br>
-3. Result and suggestions are generated<br>
-4. Graph shows visual analysis
-</p>
-</div>
+<hr>
 
-<div class="section">
-<h3>Live Feedback System</h3>
+<h2>Give Feedback</h2>
 
 <div class="box">Clarity: <input type="number" id="c1" min="1" max="5"></div>
 <div class="box">Engagement: <input type="number" id="c2" min="1" max="5"></div>
@@ -74,66 +62,110 @@ It helps in identifying strengths and areas of improvement in teaching.
 <div class="box">Doubt Solving: <input type="number" id="c4" min="1" max="5"></div>
 
 <br>
+
 <button onclick="calculate()">Check Result</button>
 
 <h3 id="result"></h3>
 <p id="suggestion"></p>
 
+<h3>Graphical Representation</h3>
 <canvas id="myChart" width="300" height="200"></canvas>
-</div>
 
-<div class="section">
-<h3>Conclusion</h3>
-<p>
-Teaching effectiveness can be improved by analyzing student feedback 
-and focusing on weak areas.
-</p>
+<h3 id="statusBox"></h3>
+
+<div style="width:300px; margin:auto; background:#ddd;">
+    <div id="bar"></div>
 </div>
 
 <script>
 function calculate(){
 
-let a = Number(document.getElementById("c1").value);
-let b = Number(document.getElementById("c2").value);
-let c = Number(document.getElementById("c3").value);
-let d = Number(document.getElementById("c4").value);
+let clarity = Number(document.getElementById("c1").value);
+let engagement = Number(document.getElementById("c2").value);
+let communication = Number(document.getElementById("c3").value);
+let doubt = Number(document.getElementById("c4").value);
 
-let avg = (a+b+c+d)/4;
+let avg = (clarity + engagement + communication + doubt) / 4;
 
-let res = "";
-if(avg<=2) res="Poor";
-else if(avg<=3) res="Average";
-else if(avg<=4) res="Good";
-else res="Excellent";
+// RESULT
+let result = "";
+if(avg <= 2) result = "Poor";
+else if(avg <= 3) result = "Average";
+else if(avg <= 4) result = "Good";
+else result = "Excellent";
 
-let sug="";
+// SUGGESTIONS
+let suggestion = "<b>Improvement Suggestions:</b><br>";
 
-if(a<3) sug+="Improve clarity<br>";
-if(b<3) sug+="Increase engagement<br>";
-if(c<3) sug+="Improve communication<br>";
-if(d<3) sug+="Better doubt solving<br>";
+if(clarity < 3){
+    suggestion += "- Use simpler explanations<br>";
+}
+if(engagement < 3){
+    suggestion += "- Increase interaction<br>";
+}
+if(communication < 3){
+    suggestion += "- Improve communication<br>";
+}
+if(doubt < 3){
+    suggestion += "- Give more time for doubts<br>";
+}
 
-if(sug=="") sug="Good teaching performance";
+if(suggestion === "<b>Improvement Suggestions:</b><br>"){
+    suggestion += "No major improvement needed";
+}
 
-document.getElementById("result").innerHTML="Result: "+res+" (Avg:"+avg.toFixed(2)+")";
-document.getElementById("suggestion").innerHTML=sug;
+// DISPLAY RESULT
+document.getElementById("result").innerHTML =
+"Result: " + result + " (Avg: " + avg.toFixed(2) + ")";
 
+document.getElementById("suggestion").innerHTML = suggestion;
+
+// GRAPH
 if(window.chart){
-window.chart.destroy();
+    window.chart.destroy();
 }
 
-let ctx=document.getElementById("myChart").getContext("2d");
+let ctx = document.getElementById("myChart").getContext("2d");
 
-window.chart=new Chart(ctx,{
-type:"bar",
-data:{
-labels:["Clarity","Engagement","Communication","Doubt"],
-datasets:[{
-label:"Ratings",
-data:[a,b,c,d]
-}]
-}
+window.chart = new Chart(ctx, {
+    type: "bar",
+    data: {
+        labels: ["Clarity","Engagement","Communication","Doubt"],
+        datasets: [{
+            label: "Ratings",
+            data: [clarity, engagement, communication, doubt]
+        }]
+    },
+    options: {
+        scales: {
+            y: {
+                beginAtZero: true,
+                max: 5
+            }
+        }
+    }
 });
+
+// STATUS BOX
+document.getElementById("statusBox").innerHTML =
+"Teaching Effectiveness: " + result;
+
+// PERFORMANCE BAR
+let percent = (avg/5) * 100;
+
+let bar = document.getElementById("bar");
+bar.style.width = percent + "%";
+
+if(avg <= 2){
+    bar.style.background = "red";
+}
+else if(avg <= 3){
+    bar.style.background = "orange";
+}
+else{
+    bar.style.background = "green";
+}
+
 }
 </script>
 
