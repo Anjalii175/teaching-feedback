@@ -1,63 +1,210 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>Feedback Analyzer</title>
+<title>Teaching Feedback System</title>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<style>
+body {
+    font-family: Arial;
+    margin: 0;
+    background: linear-gradient(to right, #667eea, #764ba2);
+    color: white;
+    text-align: center;
+}
+
+.nav {
+    padding: 15px;
+    background: rgba(0,0,0,0.3);
+}
+
+.nav button {
+    margin: 5px;
+    padding: 10px 20px;
+    border: none;
+    background: white;
+    color: black;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.section { display: none; padding: 30px; }
+.active { display: block; }
+
+.card {
+    background: white;
+    color: black;
+    padding: 20px;
+    margin: auto;
+    width: 320px;
+    border-radius: 10px;
+}
+
+input {
+    margin: 5px;
+    padding: 5px;
+    width: 60px;
+}
+
+button.main {
+    background: #667eea;
+    color: white;
+}
+</style>
 </head>
 
 <body>
 
-<h2>Upload CSV File</h2>
+<div class="nav">
+<button onclick="show('p1')">Individual</button>
+<button onclick="show('p2')">Class Analysis</button>
+</div>
 
-<input type="file" id="fileInput">
-<button onclick="processFile()">Analyze</button>
+<!-- 🔹 PAGE 1 -->
+<div id="p1" class="section active">
 
-<h3 id="output"></h3>
+<h1>AI-Based Teaching Feedback System</h1>
+<p>Analyze teaching effectiveness using student feedback</p>
+
+<div class="card">
+Clarity <br><input id="c1"><br>
+Engagement <br><input id="c2"><br>
+Communication <br><input id="c3"><br>
+Doubt Solving <br><input id="c4"><br>
+
+<button class="main" onclick="calc()">Analyze</button>
+
+<h3 id="r1"></h3>
+<p id="s1"></p>
+</div>
+
+</div>
+
+<!-- 🔹 PAGE 2 -->
+<div id="p2" class="section">
+
+<h1>Class Data Analysis</h1>
+
+<div class="card">
+
+<input type="file" id="file"><br><br>
+<button class="main" onclick="process()">Upload & Analyze</button>
+
+<h3 id="r2"></h3>
+<canvas id="chart"></canvas>
+<p id="s2"></p>
+
+</div>
+
+</div>
 
 <script>
-function processFile(){
 
-let file = document.getElementById("fileInput").files[0];
+// page switch
+function show(id){
+document.getElementById("p1").classList.remove("active");
+document.getElementById("p2").classList.remove("active");
+document.getElementById(id).classList.add("active");
+}
+
+// individual
+function calc(){
+
+let a=Number(c1.value);
+let b=Number(c2.value);
+let c=Number(c3.value);
+let d=Number(c4.value);
+
+let avg=(a+b+c+d)/4;
+
+let res="";
+if(avg<=2) res="Poor";
+else if(avg<=3) res="Average";
+else if(avg<=4) res="Good";
+else res="Excellent";
+
+let sug="";
+
+if(a<3) sug+="Improve clarity<br>";
+if(b<3) sug+="Increase engagement<br>";
+if(c<3) sug+="Better communication<br>";
+if(d<3) sug+="Focus on doubts<br>";
+
+if(sug=="") sug="Great teaching performance";
+
+r1.innerHTML="Result: "+res+" (Avg "+avg.toFixed(2)+")";
+s1.innerHTML=sug;
+
+}
+
+// CSV analysis
+function process(){
+
+let file=document.getElementById("file").files[0];
 
 if(!file){
-alert("Upload file first");
+alert("Upload CSV file");
 return;
 }
 
-let reader = new FileReader();
+let reader=new FileReader();
 
-reader.onload = function(e){
+reader.onload=function(e){
 
-let text = e.target.result;
-let rows = text.split("\n");
+let rows=e.target.result.split("\n");
 
-let total = 0;
-let count = 0;
+let sum=0,count=0;
 
-// loop through all rows
-for(let i=1; i<rows.length; i++){
+for(let i=1;i<rows.length;i++){
 
-let cols = rows[i].split(",");
+let cols=rows[i].split(",");
 
-// loop through ALL columns
-for(let j=0; j<cols.length; j++){
+for(let j=0;j<cols.length;j++){
 
-let value = Number(cols[j]);
+let val=Number(cols[j]);
 
-if(!isNaN(value) && value>0){
-total += value;
+if(!isNaN(val) && val>0){
+sum+=val;
 count++;
 }
 }
 }
 
-let avg = total / count;
+let avg=sum/count;
 
-document.getElementById("output").innerHTML =
-"Average Score: " + avg.toFixed(2);
+let res="";
+if(avg<=2) res="Poor";
+else if(avg<=3) res="Average";
+else if(avg<=4) res="Good";
+else res="Excellent";
+
+r2.innerHTML="Class Avg: "+avg.toFixed(2)+" ("+res+")";
+
+// graph
+if(window.chart) window.chart.destroy();
+
+let ctx=document.getElementById("chart").getContext("2d");
+
+window.chart=new Chart(ctx,{
+type:"bar",
+data:{
+labels:["Average"],
+datasets:[{label:"Score",data:[avg]}]
+}
+});
+
+// improvement
+let sug="";
+if(avg<3) sug="Teaching needs improvement";
+else sug="Teaching performance is good";
+
+s2.innerHTML=sug;
 
 };
 
 reader.readAsText(file);
+
 }
 </script>
 
