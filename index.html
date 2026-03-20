@@ -1,26 +1,17 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>Feedback Analysis System</title>
-
-<style>
-body { font-family: Arial; text-align:center; background:#f2f2f2; }
-button { padding:10px; background:blue; color:white; border:none; }
-</style>
+<title>Feedback Analyzer</title>
 </head>
 
 <body>
 
-<h1>Feedback Analysis (Upload Data)</h1>
-
-<p>Upload your Google Form Excel (CSV file)</p>
+<h2>Upload CSV File</h2>
 
 <input type="file" id="fileInput">
+<button onclick="processFile()">Analyze</button>
 
-<br><br>
-<button onclick="processFile()">Analyze Data</button>
-
-<h2 id="output"></h2>
+<h3 id="output"></h3>
 
 <script>
 function processFile(){
@@ -28,7 +19,7 @@ function processFile(){
 let file = document.getElementById("fileInput").files[0];
 
 if(!file){
-alert("Please upload file");
+alert("Upload file first");
 return;
 }
 
@@ -42,31 +33,27 @@ let rows = text.split("\n");
 let total = 0;
 let count = 0;
 
-// skip header row (i=1)
+// loop through all rows
 for(let i=1; i<rows.length; i++){
 
 let cols = rows[i].split(",");
 
-// assume ratings are in column 1 (change if needed)
-let value = Number(cols[1]);
+// loop through ALL columns
+for(let j=0; j<cols.length; j++){
 
-if(!isNaN(value)){
+let value = Number(cols[j]);
+
+if(!isNaN(value) && value>0){
 total += value;
 count++;
+}
 }
 }
 
 let avg = total / count;
 
-let result = "";
-
-if(avg<=2) result="Poor";
-else if(avg<=3) result="Average";
-else if(avg<=4) result="Good";
-else result="Excellent";
-
 document.getElementById("output").innerHTML =
-"Average Score: " + avg.toFixed(2) + "<br>Performance: " + result;
+"Average Score: " + avg.toFixed(2);
 
 };
 
