@@ -1,160 +1,21 @@
-<!DOCTYPE html>
-<html>
-<head>
-<title>Offline Teaching Feedback Analyzer</title>
-<style>
-body{
-    font-family: 'Segoe UI', sans-serif;
-    text-align:center;
-    margin:0;
-    background: linear-gradient(135deg,#667eea,#764ba2);
-    color:white;
-}
-h1{ margin-top:20px; }
-button{ padding:12px 20px; margin:10px; border:none; border-radius:20px; background:#ff7e5f; color:white; cursor:pointer; }
-.box{ background:white; color:black; padding:20px; width:320px; margin:auto; border-radius:15px; }
-.section{display:none;} .active{display:block;}
-input{ margin:5px; padding:5px; width:80px; }
-.result{ margin-top:10px; padding:10px; background:#eee; border-radius:10px; }
-canvas{ margin-top:20px; max-width:100%; }
+<h1>Class Feedback Dashboard</h1>
 
-/* Simple offline Chart.js fallback styling */
-</style>
-</head>
-<body>
-
-<h1>✨ Offline Feedback Analyzer</h1>
-
-<button onclick="show('p1')">Individual</button>
-<button onclick="show('p2')">Class</button>
-
-<!-- Individual -->
-<div id="p1" class="section active">
-<div class="box">
-<h3>Individual Analysis</h3>
-Clarity <input id="c1" type="number" min="1" max="5"><br>
-Engagement <input id="c2" type="number" min="1" max="5"><br>
-Communication <input id="c3" type="number" min="1" max="5"><br>
-Doubt <input id="c4" type="number" min="1" max="5"><br>
-<button onclick="analyze()">Analyze</button>
-<div class="result">
-<h3 id="r1"></h3>
-<p id="s1"></p>
-</div>
-</div>
+<!-- Teacher Panel -->
+<div class="panel">
+<h2>Teacher Panel</h2>
+Topic: <input type="text" id="topic"><br>
+Duration: <input type="number" id="duration" placeholder="minutes"><br>
+<button onclick="showTeacherGraph()">Show Topic Feedback</button>
+<div id="teacherGraph"></div>
 </div>
 
-<!-- Class -->
-<div id="p2" class="section">
-<div class="box">
-<h3>Upload CSV (Offline)</h3>
-<input type="file" id="file"><br>
-<button onclick="process()">Analyze File</button>
-<div class="result">
-<h3 id="r2"></h3>
-<p id="s2"></p>
-<p id="improve"></p>
+<!-- Student Panel -->
+<div class="panel">
+<h2>Student Feedback</h2>
+Topic: <input type="text" id="studentTopic"><br>
+Clarity <input type="number" min="1" max="5" id="s1"><br>
+Understanding <input type="number" min="1" max="5" id="s2"><br>
+Doubt <input type="number" min="1" max="5" id="s3"><br>
+<button onclick="submitStudentFeedback()">Submit Feedback</button>
+<div id="studentGraph"></div>
 </div>
-<canvas id="chart" width="300" height="200"></canvas>
-</div>
-</div>
-
-<!-- Local Chart.js -->
-<script>
-// Minimal Chart.js (offline, simplified)
-class MiniChart{
-    constructor(canvas,data,options){
-        this.canvas=canvas;
-        this.data=data;
-        this.options=options;
-        this.draw();
-    }
-    draw(){
-        let ctx=this.canvas.getContext('2d');
-        let labels=this.data.labels;
-        let values=this.data.datasets[0].data;
-        let colors=this.data.datasets[0].backgroundColor;
-        let w=this.canvas.width/values.length;
-        let hmax=this.canvas.height;
-        ctx.clearRect(0,0,this.canvas.width,this.canvas.height);
-        for(let i=0;i<values.length;i++){
-            let h=values[i]/5*hmax;
-            ctx.fillStyle=colors[i];
-            ctx.fillRect(i*w+10,hmax-h,w-20,h);
-            ctx.fillStyle='black';
-            ctx.fillText(labels[i],i*w+10,hmax-5);
-            ctx.fillText(values[i].toFixed(1),i*w+10,hmax-h-5);
-        }
-    }
-    destroy(){ this.draw=function(){}; }
-}
-
-let windowChart=null;
-
-function show(id){
-    document.getElementById("p1").classList.remove("active");
-    document.getElementById("p2").classList.remove("active");
-    document.getElementById(id).classList.add("active");
-}
-
-// Individual Analysis
-function analyze(){
-    let a=Number(document.getElementById("c1").value);
-    let b=Number(document.getElementById("c2").value);
-    let c=Number(document.getElementById("c3").value);
-    let d=Number(document.getElementById("c4").value);
-    if(!a||!b||!c||!d){ alert("Fill all values"); return; }
-    let avg=(a+b+c+d)/4;
-    let res=avg<=2?"Poor":avg<=3?"Average":avg<=4?"Good":"Excellent";
-    document.getElementById("r1").innerHTML="Result: "+res+" ("+avg.toFixed(2)+")";
-    document.getElementById("s1").innerHTML="Focus on improving low-score areas.";
-}
-
-// Class CSV Analysis
-function process(){
-    let file=document.getElementById("file").files[0];
-    if(!file){ alert("Upload CSV"); return; }
-    let reader=new FileReader();
-    reader.onload=function(e){
-        let lines=e.target.result.trim().split(/\r?\n/);
-        let clarity=0,eng=0,comm=0,doubt=0,count=0;
-        for(let i=0;i<lines.length;i++){
-            let row=lines[i].split(",");
-            if(row.length<4) continue;
-            let v1=parseFloat(row[0]),v2=parseFloat(row[1]),v3=parseFloat(row[2]),v4=parseFloat(row[3]);
-            if(isNaN(v1)||isNaN(v2)||isNaN(v3)||isNaN(v4)) continue;
-            clarity+=v1; eng+=v2; comm+=v3; doubt+=v4;
-            count++;
-        }
-        if(count==0){
-            document.getElementById("r2").innerHTML="Invalid CSV ❌";
-            document.getElementById("s2").innerHTML="";
-            document.getElementById("improve").innerHTML="";
-            return;
-        }
-        clarity/=count; eng/=count; comm/=count; doubt/=count;
-        let avg=(clarity+eng+comm+doubt)/4;
-        document.getElementById("r2").innerHTML="Class Avg: "+avg.toFixed(2);
-        document.getElementById("s2").innerHTML="Analysis Complete ✔";
-
-        let suggestions=[];
-        if(clarity<3) suggestions.push("Improve Clarity");
-        if(eng<3) suggestions.push("Increase Engagement");
-        if(comm<3) suggestions.push("Enhance Communication");
-        if(doubt<3) suggestions.push("Better Doubt Resolution");
-        document.getElementById("improve").innerHTML=suggestions.length>0 ? "Suggestions: "+suggestions.join(", ") : "All areas are strong ✔";
-
-        // Offline Graph
-        let canvas=document.getElementById("chart");
-        if(windowChart) windowChart.destroy();
-        windowChart=new MiniChart(canvas,{
-            labels:["Clarity","Engagement","Communication","Doubt"],
-            datasets:[{label:"Scores",data:[clarity,eng,comm,doubt],backgroundColor:['#ff6384','#36a2eb','#ffce56','#4bc0c0']}]
-        });
-    };
-    reader.readAsText(file);
-}
-</script>
-
-</body>
-</html>
