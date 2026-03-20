@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html>
-
 <head>
 <title>AI Teaching Feedback System</title>
 
@@ -8,135 +7,86 @@
 
 <style>
 body{
-    font-family: Arial;
-    text-align:center;
-    margin:0;
-    background: linear-gradient(135deg,#667eea,#764ba2);
-    color:white;
+font-family: Arial;
+text-align:center;
+background: linear-gradient(135deg,#667eea,#764ba2);
+color:white;
 }
-
-header{
-    padding:20px;
-    font-size:24px;
-    font-weight:bold;
-}
-
-.nav button{
-    padding:10px 20px;
-    margin:10px;
-    border:none;
-    border-radius:20px;
-    background:white;
-    cursor:pointer;
-}
-
-.section{display:none;}
-.active{display:block;}
 
 .box{
-    background:white;
-    color:black;
-    padding:20px;
-    width:320px;
-    margin:auto;
-    border-radius:15px;
-}
-
-input{
-    padding:6px;
-    margin:5px;
-    width:80px;
+background:white;
+color:black;
+padding:20px;
+margin:auto;
+width:340px;
+border-radius:15px;
 }
 
 button{
-    padding:10px;
-    margin-top:10px;
-    background:#667eea;
-    color:white;
-    border:none;
-    border-radius:8px;
-    cursor:pointer;
+padding:10px;
+margin:10px;
+border:none;
+background:#667eea;
+color:white;
+border-radius:10px;
+cursor:pointer;
 }
 
-.result{
-    margin-top:10px;
-    background:#f1f1f1;
-    padding:10px;
-    border-radius:10px;
-}
+input{margin:5px;}
+canvas{margin-top:20px;}
 </style>
 
 </head>
 
 <body>
 
-<header>✨ AI-Based Teaching Feedback System</header>
+<h1>✨ AI-Based Teaching Feedback System</h1>
 
-<div class="nav">
-<button onclick="showPage('p1')">Individual</button>
-<button onclick="showPage('p2')">Class Analysis</button>
-</div>
+<button onclick="show('p1')">Individual</button>
+<button onclick="show('p2')">Class Analysis</button>
 
-<!-- PAGE 1 -->
-<div id="p1" class="section active">
+<div id="p1" class="box">
+<h3>Individual Analysis</h3>
 
-<h3>Individual Feedback</h3>
-
-<div class="box">
-
-Clarity <br><input id="c1" type="number" min="1" max="5"><br>
-Engagement <br><input id="c2" type="number" min="1" max="5"><br>
-Communication <br><input id="c3" type="number" min="1" max="5"><br>
-Doubt Solving <br><input id="c4" type="number" min="1" max="5"><br>
+Clarity <input id="c1" type="number" min="1" max="5"><br>
+Engagement <input id="c2" type="number" min="1" max="5"><br>
+Communication <input id="c3" type="number" min="1" max="5"><br>
+Doubt Solving <input id="c4" type="number" min="1" max="5"><br>
 
 <button onclick="analyze()">Analyze</button>
 
-<div class="result">
-<h3 id="res1"></h3>
-<p id="plan"></p>
-</div>
+<h3 id="r1"></h3>
+<p id="s1"></p>
 
 </div>
-</div>
 
-<!-- PAGE 2 -->
-<div id="p2" class="section">
-
+<div id="p2" class="box" style="display:none;">
 <h3>Upload CSV</h3>
 
-<div class="box">
-
 <input type="file" id="file"><br>
+<button onclick="process()">Analyze</button>
 
-<button onclick="process()">Analyze File</button>
-
-<div class="result">
-<h3 id="res2"></h3>
-<p id="extra"></p>
-</div>
+<h3 id="r2"></h3>
+<p id="s2"></p>
 
 <canvas id="chart"></canvas>
-
-</div>
-
 </div>
 
 <script>
 
-// page switch
-function showPage(id){
-document.getElementById("p1").classList.remove("active");
-document.getElementById("p2").classList.remove("active");
-document.getElementById(id).classList.add("active");
+function show(id){
+p1.style.display="none";
+p2.style.display="none";
+document.getElementById(id).style.display="block";
 }
 
-// individual
+// INDIVIDUAL
 function analyze(){
 
-let a=Number(c1.value);
-let b=Number(c2.value);
-let c=Number(c3.value);
-let d=Number(c4.value);
+let a=+c1.value;
+let b=+c2.value;
+let c=+c3.value;
+let d=+c4.value;
 
 if(!a||!b||!c||!d){
 alert("Fill all values");
@@ -147,97 +97,109 @@ let avg=(a+b+c+d)/4;
 
 let res = avg<=2?"Poor":avg<=3?"Average":avg<=4?"Good":"Excellent";
 
-let min=Math.min(a,b,c,d);
+// better suggestions
+let sug="";
 
-let weak="";
-if(min==a) weak="Clarity";
-else if(min==b) weak="Engagement";
-else if(min==c) weak="Communication";
-else weak="Doubt Solving";
-
-document.getElementById("res1").innerHTML =
-"Result: "+res+" ("+avg.toFixed(2)+")";
-
-document.getElementById("plan").innerHTML =
-"⚠ Weak Area: "+weak;
+if(a<3){
+sug+="🔹 Improve clarity by using real-life examples, diagrams, and simpler explanations.<br>";
+}
+if(b<3){
+sug+="🔹 Increase engagement through questioning, discussions, and interactive activities.<br>";
+}
+if(c<3){
+sug+="🔹 Work on communication skills such as voice clarity and structured explanation.<br>";
+}
+if(d<3){
+sug+="🔹 Allocate time for doubt solving and encourage students to ask questions.<br>";
 }
 
-// CSV PROCESS
+if(sug===""){
+sug="🎉 Teaching performance is strong across all parameters. Maintain consistency!";
+}
+
+r1.innerHTML="Result: "+res+" ("+avg.toFixed(2)+")";
+s1.innerHTML=sug;
+}
+
+// CSV
 function process(){
 
-let file=document.getElementById("file").files[0];
+let file=fileInput();
 
-if(!file){
-alert("Upload CSV file");
-return;
-}
+if(!file) return;
 
 let reader=new FileReader();
 
 reader.onload=function(e){
 
-let rows=e.target.result.trim().split("\n");
-
-let sum=0,count=0;
+let lines=e.target.result.trim().split("\n");
 
 let clarity=0,eng=0,comm=0,doubt=0;
+let count=0;
 
-for(let i=1;i<rows.length;i++){
+for(let i=1;i<lines.length;i++){
 
-let cols=rows[i].split(",");
+let row=lines[i].split(",");
 
-let c1=parseFloat(cols[0])||0;
-let c2=parseFloat(cols[1])||0;
-let c3=parseFloat(cols[2])||0;
-let c4=parseFloat(cols[3])||0;
+if(row.length<4) continue;
+
+let c1=parseFloat(row[0]);
+let c2=parseFloat(row[1]);
+let c3=parseFloat(row[2]);
+let c4=parseFloat(row[3]);
+
+if(isNaN(c1)||isNaN(c2)||isNaN(c3)||isNaN(c4)) continue;
 
 clarity+=c1;
 eng+=c2;
 comm+=c3;
 doubt+=c4;
 
-sum+=c1+c2+c3+c4;
-count+=4;
+count++;
 }
 
 if(count==0){
-res2.innerHTML="Invalid File ❌";
+r2.innerHTML="❌ Invalid CSV data";
 return;
 }
 
-let avg=sum/count;
+clarity/=count;
+eng/=count;
+comm/=count;
+doubt/=count;
 
-let n=rows.length-1;
+let avg=(clarity+eng+comm+doubt)/4;
 
-clarity/=n;
-eng/=n;
-comm/=n;
-doubt/=n;
+// strong/weak
+let arr=[clarity,eng,comm,doubt];
+let names=["Clarity","Engagement","Communication","Doubt Solving"];
 
-// strong + weak
-let max=Math.max(clarity,eng,comm,doubt);
-let min=Math.min(clarity,eng,comm,doubt);
+let maxI=arr.indexOf(Math.max(...arr));
+let minI=arr.indexOf(Math.min(...arr));
 
-let strong="",weak="";
+let strong=names[maxI];
+let weak=names[minI];
 
-if(max==clarity) strong="Clarity";
-else if(max==eng) strong="Engagement";
-else if(max==comm) strong="Communication";
-else strong="Doubt Solving";
+// better improvement
+let improvement="";
 
-if(min==clarity) weak="Clarity";
-else if(min==eng) weak="Engagement";
-else if(min==comm) weak="Communication";
-else weak="Doubt Solving";
+if(weak==="Clarity"){
+improvement="Focus on structured explanation, use visual aids and simplify complex topics.";
+}
+else if(weak==="Engagement"){
+improvement="Adopt interactive teaching methods like questioning and group activities.";
+}
+else if(weak==="Communication"){
+improvement="Improve voice modulation, clarity of speech, and confidence.";
+}
+else{
+improvement="Encourage students to ask doubts and allocate dedicated doubt-solving time.";
+}
 
-// result
-document.getElementById("res2").innerHTML =
-"Class Avg: "+avg.toFixed(2);
+r2.innerHTML="Class Average: "+avg.toFixed(2);
+s2.innerHTML="⭐ Strong Area: "+strong+"<br>⚠ Weak Area: "+weak+"<br>💡 Improvement: "+improvement;
 
-document.getElementById("extra").innerHTML =
-"⭐ Strong: "+strong+"<br>⚠ Weak: "+weak;
-
-// GRAPH (IMPORTANT FIX)
+// GRAPH FIX (important)
 let ctx=document.getElementById("chart");
 
 if(window.chart){
@@ -247,11 +209,10 @@ window.chart.destroy();
 window.chart=new Chart(ctx,{
 type:"bar",
 data:{
-labels:["Clarity","Engagement","Communication","Doubt"],
+labels:names,
 datasets:[{
-label:"Average Scores",
-data:[clarity,eng,comm,doubt],
-backgroundColor:["red","blue","green","orange"]
+label:"Average Score",
+data:arr
 }]
 }
 });
@@ -259,7 +220,16 @@ backgroundColor:["red","blue","green","orange"]
 };
 
 reader.readAsText(file);
+}
 
+// file helper
+function fileInput(){
+let f=document.getElementById("file").files[0];
+if(!f){
+alert("Upload CSV");
+return null;
+}
+return f;
 }
 
 </script>
