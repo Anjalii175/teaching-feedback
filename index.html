@@ -56,10 +56,10 @@ input {
 
 <div class="box">
 
-Clarity <br><input id="c1" type="number"><br>
-Engagement <br><input id="c2" type="number"><br>
-Communication <br><input id="c3" type="number"><br>
-Doubt Solving <br><input id="c4" type="number"><br><br>
+Clarity <br><input id="c1" type="number" min="1" max="5"><br>
+Engagement <br><input id="c2" type="number" min="1" max="5"><br>
+Communication <br><input id="c3" type="number" min="1" max="5"><br>
+Doubt Solving <br><input id="c4" type="number" min="1" max="5"><br><br>
 
 <button onclick="analyze()">Analyze</button>
 
@@ -100,7 +100,7 @@ document.getElementById("p2").classList.remove("active");
 document.getElementById(id).classList.add("active");
 }
 
-// INDIVIDUAL
+// INDIVIDUAL ANALYSIS
 function analyze(){
 
 let a = Number(document.getElementById("c1").value);
@@ -108,16 +108,18 @@ let b = Number(document.getElementById("c2").value);
 let c = Number(document.getElementById("c3").value);
 let d = Number(document.getElementById("c4").value);
 
+// validation
 if(!a || !b || !c || !d){
-alert("Fill all values");
+alert("Please fill all values");
 return;
 }
 
 if(a<1||a>5||b<1||b>5||c<1||c>5||d<1||d>5){
-alert("Enter values between 1 to 5");
+alert("Enter values between 1 to 5 only");
 return;
 }
 
+// average
 let avg = (a+b+c+d)/4;
 
 // result
@@ -157,13 +159,13 @@ document.getElementById("plan").innerHTML =
 
 }
 
-// CSV + GRAPH
+// CSV ANALYSIS
 function process(){
 
 let file = document.getElementById("file").files[0];
 
 if(!file){
-alert("Upload file");
+alert("Upload CSV file");
 return;
 }
 
@@ -213,7 +215,7 @@ data:[avg]
 }
 });
 
-// improvement
+// suggestion
 let sug="";
 if(avg<=2) sug="Major improvement needed";
 else if(avg<=3) sug="Improve engagement";
@@ -231,5 +233,4 @@ reader.readAsText(file);
 </script>
 
 </body>
-
 </html>
