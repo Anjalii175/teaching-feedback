@@ -1,94 +1,78 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>Teaching Feedback Analysis System</title>
+<title>Feedback Analysis System</title>
 
 <style>
-body {
-    font-family: Arial;
-    text-align: center;
-    background: #f2f2f2;
-    margin: 20px;
-}
-
-h1 { color: darkblue; }
-
-.box { margin: 10px; }
-
-input, select {
-    padding: 5px;
-    margin: 5px;
-}
-
-button {
-    padding: 10px 20px;
-    background: blue;
-    color: white;
-    border: none;
-    border-radius: 5px;
-}
-
-.section {
-    background: white;
-    padding: 20px;
-    margin: 20px;
-    border-radius: 10px;
-}
+body { font-family: Arial; text-align:center; background:#f2f2f2; }
+button { padding:10px; background:blue; color:white; border:none; }
 </style>
 </head>
 
 <body>
 
-<h1>Teaching Feedback Analysis System</h1>
+<h1>Feedback Analysis (Upload Data)</h1>
 
-<!-- 🔹 INDIVIDUAL ANALYSIS -->
-<div class="section">
+<p>Upload your Google Form Excel (CSV file)</p>
 
-<h2>Individual Feedback Analysis</h2>
+<input type="file" id="fileInput">
 
-<div class="box">Clarity: <input type="number" id="c1" min="1" max="5"></div>
-<div class="box">Engagement: <input type="number" id="c2" min="1" max="5"></div>
-<div class="box">Communication: <input type="number" id="c3" min="1" max="5"></div>
-<div class="box">Doubt Solving: <input type="number" id="c4" min="1" max="5"></div>
+<br><br>
+<button onclick="processFile()">Analyze Data</button>
 
-<button onclick="calculate()">Analyze</button>
-
-<h3 id="result"></h3>
-<p id="suggestion"></p>
-
-</div>
-
-<!-- 🔹 CLASS ANALYSIS -->
-<div class="section">
-
-<h2>Class Feedback Analysis (Multiple Students)</h2>
-
-<p>Enter number of students:</p>
-<input type="number" id="num">
-
-<button onclick="generate()">Generate Inputs</button>
-
-<div id="inputs"></div>
-
-<br>
-<button onclick="calculateClass()">Calculate Class Average</button>
-
-<h3 id="classResult"></h3>
-
-</div>
+<h2 id="output"></h2>
 
 <script>
+function processFile(){
 
-// 🔹 INDIVIDUAL ANALYSIS
-function calculate(){
+let file = document.getElementById("fileInput").files[0];
 
-let c1 = Number(document.getElementById("c1").value);
-let c2 = Number(document.getElementById("c2").value);
-let c3 = Number(document.getElementById("c3").value);
-let c4 = Number(document.getElementById("c4").value);
+if(!file){
+alert("Please upload file");
+return;
+}
 
-let avg = (c1+c2+c3+c4)/4;
+let reader = new FileReader();
+
+reader.onload = function(e){
+
+let text = e.target.result;
+let rows = text.split("\n");
+
+let total = 0;
+let count = 0;
+
+// skip header row (i=1)
+for(let i=1; i<rows.length; i++){
+
+let cols = rows[i].split(",");
+
+// assume ratings are in column 1 (change if needed)
+let value = Number(cols[1]);
+
+if(!isNaN(value)){
+total += value;
+count++;
+}
+}
+
+let avg = total / count;
 
 let result = "";
+
 if(avg<=2) result="Poor";
 else if(avg<=3) result="Average";
+else if(avg<=4) result="Good";
+else result="Excellent";
+
+document.getElementById("output").innerHTML =
+"Average Score: " + avg.toFixed(2) + "<br>Performance: " + result;
+
+};
+
+reader.readAsText(file);
+}
+</script>
+
+</body>
+</html>
