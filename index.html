@@ -4,7 +4,6 @@
 <head>
 <title>Smart Teaching Improvement System</title>
 
-<!-- Chart.js for graph -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <style>
@@ -14,16 +13,9 @@ body {
     background-color: #f5f5f5;
 }
 
-/* Page sections */
-.section {
-    display: none;
-}
+.section { display: none; }
+.active { display: block; }
 
-.active {
-    display: block;
-}
-
-/* Card box */
 .box {
     background: white;
     padding: 20px;
@@ -33,7 +25,6 @@ body {
     box-shadow: 0px 0px 10px gray;
 }
 
-/* Buttons */
 button {
     padding: 10px;
     margin: 10px;
@@ -43,7 +34,6 @@ button {
     cursor: pointer;
 }
 
-/* Input */
 input {
     padding: 5px;
     margin: 5px;
@@ -56,7 +46,6 @@ input {
 
 <h1>📘 Smart Teaching Improvement System</h1>
 
-<!-- Navigation -->
 <button onclick="showPage('p1')">👤 Individual</button>
 <button onclick="showPage('p2')">📊 Class Analysis</button>
 
@@ -104,14 +93,14 @@ Doubt Solving <br><input id="c4" type="number"><br><br>
 
 <script>
 
-/* PAGE SWITCH */
+// PAGE SWITCH
 function showPage(id){
 document.getElementById("p1").classList.remove("active");
 document.getElementById("p2").classList.remove("active");
 document.getElementById(id).classList.add("active");
 }
 
-/* INDIVIDUAL ANALYSIS */
+// INDIVIDUAL
 function analyze(){
 
 let a = Number(document.getElementById("c1").value);
@@ -119,4 +108,128 @@ let b = Number(document.getElementById("c2").value);
 let c = Number(document.getElementById("c3").value);
 let d = Number(document.getElementById("c4").value);
 
-if
+if(!a || !b || !c || !d){
+alert("Fill all values");
+return;
+}
+
+if(a<1||a>5||b<1||b>5||c<1||c>5||d<1||d>5){
+alert("Enter values between 1 to 5");
+return;
+}
+
+let avg = (a+b+c+d)/4;
+
+// result
+let result="";
+if(avg<=2) result="Poor";
+else if(avg<=3) result="Average";
+else if(avg<=4) result="Good";
+else result="Excellent";
+
+// weakest area
+let min = Math.min(a,b,c,d);
+let weak="", solution="";
+
+if(min==a){
+weak="Clarity";
+solution="Use simple language, examples and diagrams";
+}
+else if(min==b){
+weak="Engagement";
+solution="Ask questions and involve students";
+}
+else if(min==c){
+weak="Communication";
+solution="Speak clearly and confidently";
+}
+else{
+weak="Doubt Solving";
+solution="Give more time for doubts";
+}
+
+// output
+document.getElementById("result").innerHTML =
+"Result: "+result+" (Avg "+avg.toFixed(2)+")";
+
+document.getElementById("plan").innerHTML =
+"Weakest Area: "+weak+"<br>Solution: "+solution;
+
+}
+
+// CSV + GRAPH
+function process(){
+
+let file = document.getElementById("file").files[0];
+
+if(!file){
+alert("Upload file");
+return;
+}
+
+let reader = new FileReader();
+
+reader.onload = function(e){
+
+let rows = e.target.result.split("\n");
+
+let sum=0, count=0;
+
+for(let i=1;i<rows.length;i++){
+
+let cols = rows[i].split(",");
+
+for(let j=0;j<cols.length;j++){
+
+let val = Number(cols[j]);
+
+if(!isNaN(val) && val>0){
+sum+=val;
+count++;
+}
+}
+}
+
+let avg = sum/count;
+
+document.getElementById("result2").innerHTML =
+"Class Average: "+avg.toFixed(2);
+
+// graph
+let ctx = document.getElementById("chart").getContext("2d");
+
+if(window.chart){
+window.chart.destroy();
+}
+
+window.chart = new Chart(ctx,{
+type:"bar",
+data:{
+labels:["Average"],
+datasets:[{
+label:"Score",
+data:[avg]
+}]
+}
+});
+
+// improvement
+let sug="";
+if(avg<=2) sug="Major improvement needed";
+else if(avg<=3) sug="Improve engagement";
+else if(avg<=4) sug="Good but can improve";
+else sug="Excellent teaching";
+
+document.getElementById("suggestion").innerHTML = sug;
+
+};
+
+reader.readAsText(file);
+
+}
+
+</script>
+
+</body>
+
+</html>
