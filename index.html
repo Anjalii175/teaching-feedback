@@ -1,21 +1,121 @@
-<h1>Class Feedback Dashboard</h1>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Teacher-Student Feedback System</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    body { font-family: Arial; margin: 20px; background:#f4f4f4; }
+    h2 { color:#333; }
+    .container { display:flex; gap:20px; }
+    .panel { background:white; padding:20px; border-radius:10px; width:50%; }
+    input, select, textarea, button { width:100%; margin:8px 0; padding:8px; }
+    button { background:#4CAF50; color:white; border:none; cursor:pointer; }
+    canvas { margin-top:20px; }
+  </style>
+</head>
+<body>
 
-<!-- Teacher Panel -->
-<div class="panel">
-<h2>Teacher Panel</h2>
-Topic: <input type="text" id="topic"><br>
-Duration: <input type="number" id="duration" placeholder="minutes"><br>
-<button onclick="showTeacherGraph()">Show Topic Feedback</button>
-<div id="teacherGraph"></div>
+<h1>📚 Feedback Learning System</h1>
+
+<div class="container">
+
+  <!-- Teacher Panel -->
+  <div class="panel">
+    <h2>👩‍🏫 Teacher Panel</h2>
+
+    <input type="text" id="topic" placeholder="Topic Name">
+    <input type="text" id="duration" placeholder="Duration of Class">
+
+    <textarea id="manualData" placeholder="Enter student scores (comma separated e.g. 60,70,80)"></textarea>
+
+    <input type="file" id="csvFile" accept=".csv">
+
+    <button onclick="processData()">Generate Summary</button>
+
+    <canvas id="chart"></canvas>
+
+    <p id="suggestion"></p>
+  </div>
+
+  <!-- Student Panel -->
+  <div class="panel">
+    <h2>👨‍🎓 Student Panel</h2>
+
+    <input type="text" placeholder="Select Topic/Class">
+
+    <label>Did you understand the topic?</label>
+    <select id="understand">
+      <option>Yes</option>
+      <option>No</option>
+    </select>
+
+    <label>Where did you face difficulty?</label>
+    <textarea id="difficulty"></textarea>
+
+    <label>Teaching speed</label>
+    <select id="speed">
+      <option>Slow</option>
+      <option>Perfect</option>
+      <option>Fast</option>
+    </select>
+
+    <button onclick="submitFeedback()">Submit Feedback</button>
+
+    <p id="response"></p>
+  </div>
+
 </div>
 
-<!-- Student Panel -->
-<div class="panel">
-<h2>Student Feedback</h2>
-Topic: <input type="text" id="studentTopic"><br>
-Clarity <input type="number" min="1" max="5" id="s1"><br>
-Understanding <input type="number" min="1" max="5" id="s2"><br>
-Doubt <input type="number" min="1" max="5" id="s3"><br>
-<button onclick="submitStudentFeedback()">Submit Feedback</button>
-<div id="studentGraph"></div>
-</div>
+<script>
+let scores = [];
+
+function processData() {
+  let manual = document.getElementById("manualData").value;
+  let file = document.getElementById("csvFile").files[0];
+
+  if (manual) {
+    scores = manual.split(",").map(Number);
+    drawChart();
+  } else if (file) {
+    let reader = new FileReader();
+    reader.onload = function(e) {
+      let text = e.target.result;
+      scores = text.split(/\r?\n/).map(Number);
+      drawChart();
+    };
+    reader.readAsText(file);
+  }
+}
+
+function drawChart() {
+  let avg = scores.reduce((a,b)=>a+b,0)/scores.length;
+
+  new Chart(document.getElementById("chart"), {
+    type: 'bar',
+    data: {
+      labels: scores.map((_,i)=>"Student "+(i+1)),
+      datasets: [{
+        label: 'Scores',
+        data: scores
+      }]
+    }
+  });
+
+  let suggestion = avg < 50 ? "⚠️ Students need re-teaching of topic" : "✅ Good understanding";
+  document.getElementById("suggestion").innerText = "Average: " + avg.toFixed(2) + "% | " + suggestion;
+}
+
+function submitFeedback() {
+  let u = document.getElementById("understand").value;
+  let d = document.getElementById("difficulty").value;
+  let s = document.getElementById("speed").value;
+
+  document.getElementById("response").innerText = "Feedback Submitted ✅";
+
+  console.log({understanding:u, difficulty:d, speed:s});
+}
+</script>
+
+</body>
+</html>
