@@ -1,131 +1,94 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>Smart Teaching Analyzer</title>
+<title>Teaching Feedback Analysis System</title>
 
 <style>
-body { font-family: Arial; text-align: center; background:#f2f2f2; }
+body {
+    font-family: Arial;
+    text-align: center;
+    background: #f2f2f2;
+    margin: 20px;
+}
+
+h1 { color: darkblue; }
 
 .box { margin: 10px; }
 
-button { padding:10px; background:blue; color:white; border:none; }
+input, select {
+    padding: 5px;
+    margin: 5px;
+}
 
-select, input { padding:5px; }
+button {
+    padding: 10px 20px;
+    background: blue;
+    color: white;
+    border: none;
+    border-radius: 5px;
+}
+
+.section {
+    background: white;
+    padding: 20px;
+    margin: 20px;
+    border-radius: 10px;
+}
 </style>
 </head>
 
 <body>
 
-<h1>Smart Teaching Feedback Analyzer</h1>
+<h1>Teaching Feedback Analysis System</h1>
 
-<p>This system analyzes teaching effectiveness based on multiple parameters.</p>
+<!-- 🔹 INDIVIDUAL ANALYSIS -->
+<div class="section">
 
-<hr>
+<h2>Individual Feedback Analysis</h2>
 
-<h2>Enter Details</h2>
-
-<!-- Ratings -->
 <div class="box">Clarity: <input type="number" id="c1" min="1" max="5"></div>
 <div class="box">Engagement: <input type="number" id="c2" min="1" max="5"></div>
 <div class="box">Communication: <input type="number" id="c3" min="1" max="5"></div>
 <div class="box">Doubt Solving: <input type="number" id="c4" min="1" max="5"></div>
 
-<!-- New Parameters -->
-<div class="box">
-Teaching Method:
-<select id="method">
-<option>Lecture</option>
-<option>Interactive</option>
-<option>Practical</option>
-</select>
+<button onclick="calculate()">Analyze</button>
+
+<h3 id="result"></h3>
+<p id="suggestion"></p>
+
 </div>
 
-<div class="box">
-Class Size:
-<select id="size">
-<option>Small</option>
-<option>Medium</option>
-<option>Large</option>
-</select>
-</div>
+<!-- 🔹 CLASS ANALYSIS -->
+<div class="section">
 
-<div class="box">
-Student Level:
-<select id="level">
-<option>Beginner</option>
-<option>Average</option>
-<option>Advanced</option>
-</select>
-</div>
+<h2>Class Feedback Analysis (Multiple Students)</h2>
+
+<p>Enter number of students:</p>
+<input type="number" id="num">
+
+<button onclick="generate()">Generate Inputs</button>
+
+<div id="inputs"></div>
 
 <br>
+<button onclick="calculateClass()">Calculate Class Average</button>
 
-<button onclick="analyze()">Analyze Teaching</button>
+<h3 id="classResult"></h3>
 
-<h2 id="result"></h2>
-<p id="analysis"></p>
+</div>
 
 <script>
-function analyze(){
+
+// 🔹 INDIVIDUAL ANALYSIS
+function calculate(){
 
 let c1 = Number(document.getElementById("c1").value);
 let c2 = Number(document.getElementById("c2").value);
 let c3 = Number(document.getElementById("c3").value);
 let c4 = Number(document.getElementById("c4").value);
 
-let method = document.getElementById("method").value;
-let size = document.getElementById("size").value;
-let level = document.getElementById("level").value;
-
 let avg = (c1+c2+c3+c4)/4;
 
-// RESULT
 let result = "";
-if(avg <=2) result="Poor";
+if(avg<=2) result="Poor";
 else if(avg<=3) result="Average";
-else if(avg<=4) result="Good";
-else result="Excellent";
-
-// SMART ANALYSIS
-let analysis = "";
-
-// based on ratings
-if(c1<3) analysis += "Improve clarity with simple examples.<br>";
-if(c2<3) analysis += "Increase student interaction.<br>";
-if(c3<3) analysis += "Work on communication skills.<br>";
-if(c4<3) analysis += "Focus more on doubt solving.<br>";
-
-// based on method
-if(method=="Lecture" && c2<3){
-analysis += "Switch to interactive teaching method.<br>";
-}
-
-if(method=="Practical" && c1<3){
-analysis += "Explain concepts before practical sessions.<br>";
-}
-
-// based on class size
-if(size=="Large" && c2<3){
-analysis += "Use group activities for large class.<br>";
-}
-
-// based on student level
-if(level=="Beginner" && c1<3){
-analysis += "Use very basic explanations for beginners.<br>";
-}
-
-if(analysis==""){
-analysis="Teaching strategy is effective.";
-}
-
-// DISPLAY
-document.getElementById("result").innerHTML =
-"Overall Performance: " + result;
-
-document.getElementById("analysis").innerHTML = analysis;
-
-}
-</script>
-
-</body>
-</html>
