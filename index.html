@@ -1,27 +1,117 @@
 <!DOCTYPE html>
 <html>
+
 <head>
 <title>Smart Teaching Improvement System</title>
+
+<!-- Chart.js for graph -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<style>
+body {
+    font-family: Arial;
+    text-align: center;
+    background-color: #f5f5f5;
+}
+
+/* Page sections */
+.section {
+    display: none;
+}
+
+.active {
+    display: block;
+}
+
+/* Card box */
+.box {
+    background: white;
+    padding: 20px;
+    margin: auto;
+    width: 300px;
+    border-radius: 10px;
+    box-shadow: 0px 0px 10px gray;
+}
+
+/* Buttons */
+button {
+    padding: 10px;
+    margin: 10px;
+    border: none;
+    background-color: #4CAF50;
+    color: white;
+    cursor: pointer;
+}
+
+/* Input */
+input {
+    padding: 5px;
+    margin: 5px;
+}
+</style>
+
 </head>
 
-<body style="text-align:center; font-family:Arial;">
+<body>
 
-<h1>Smart Teaching Improvement System</h1>
+<h1>📘 Smart Teaching Improvement System</h1>
 
-<h3>Enter Ratings (1 to 5)</h3>
+<!-- Navigation -->
+<button onclick="showPage('p1')">👤 Individual</button>
+<button onclick="showPage('p2')">📊 Class Analysis</button>
 
-Clarity <input id="c1" type="number"><br><br>
-Engagement <input id="c2" type="number"><br><br>
-Communication <input id="c3" type="number"><br><br>
-Doubt Solving <input id="c4" type="number"><br><br>
+<!-- PAGE 1 -->
+<div id="p1" class="section active">
+
+<h3>Individual Analysis</h3>
+
+<div class="box">
+
+Clarity <br><input id="c1" type="number"><br>
+Engagement <br><input id="c2" type="number"><br>
+Communication <br><input id="c3" type="number"><br>
+Doubt Solving <br><input id="c4" type="number"><br><br>
 
 <button onclick="analyze()">Analyze</button>
 
-<h2 id="result"></h2>
+<h3 id="result"></h3>
 <p id="plan"></p>
+
+</div>
+
+</div>
+
+<!-- PAGE 2 -->
+<div id="p2" class="section">
+
+<h3>Class Analysis (Upload CSV)</h3>
+
+<div class="box">
+
+<input type="file" id="file"><br><br>
+
+<button onclick="process()">Analyze File</button>
+
+<h3 id="result2"></h3>
+
+<canvas id="chart"></canvas>
+
+<p id="suggestion"></p>
+
+</div>
+
+</div>
 
 <script>
 
+/* PAGE SWITCH */
+function showPage(id){
+document.getElementById("p1").classList.remove("active");
+document.getElementById("p2").classList.remove("active");
+document.getElementById(id).classList.add("active");
+}
+
+/* INDIVIDUAL ANALYSIS */
 function analyze(){
 
 let a = Number(document.getElementById("c1").value);
@@ -29,57 +119,4 @@ let b = Number(document.getElementById("c2").value);
 let c = Number(document.getElementById("c3").value);
 let d = Number(document.getElementById("c4").value);
 
-if(!a || !b || !c || !d){
-alert("Please fill all values");
-return;
-}
-
-if(a<1||a>5||b<1||b>5||c<1||c>5||d<1||d>5){
-alert("Enter values between 1 to 5 only");
-return;
-}
-
-let avg = (a+b+c+d)/4;
-
-// Result
-let result="";
-if(avg<=2) result="Poor";
-else if(avg<=3) result="Average";
-else if(avg<=4) result="Good";
-else result="Excellent";
-
-// Weakest Area
-let min = Math.min(a,b,c,d);
-let weak = "";
-let solution = "";
-
-if(min == a){
-weak = "Clarity";
-solution = "Use simple language, real-life examples and diagrams";
-}
-else if(min == b){
-weak = "Engagement";
-solution = "Ask questions, involve students and use activities";
-}
-else if(min == c){
-weak = "Communication";
-solution = "Speak clearly and maintain eye contact";
-}
-else{
-weak = "Doubt Solving";
-solution = "Give more time to students and solve doubts properly";
-}
-
-// Output
-document.getElementById("result").innerHTML =
-"Result: "+result+" (Average "+avg.toFixed(2)+")";
-
-document.getElementById("plan").innerHTML =
-"Weakest Area: "+weak+"<br>Solution: "+solution;
-
-}
-
-</script>
-
-</body>
-</html>
+if
