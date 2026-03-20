@@ -2,7 +2,7 @@
 <html>
 
 <head>
-<title>Smart Teaching Improvement System</title>
+<title>AI Teaching Feedback System</title>
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
@@ -10,33 +10,80 @@
 body {
     font-family: Arial;
     text-align: center;
-    background-color: #f5f5f5;
+    margin: 0;
+    background: linear-gradient(135deg,#667eea,#764ba2);
+    color: white;
 }
 
-.section { display: none; }
-.active { display: block; }
-
-.box {
-    background: white;
+/* header */
+header {
     padding: 20px;
-    margin: auto;
-    width: 300px;
-    border-radius: 10px;
-    box-shadow: 0px 0px 10px gray;
+    font-size: 24px;
+    font-weight: bold;
 }
 
-button {
-    padding: 10px;
+/* nav buttons */
+.nav button {
+    padding: 10px 20px;
     margin: 10px;
     border: none;
-    background-color: #4CAF50;
-    color: white;
+    border-radius: 20px;
+    background: white;
+    color: #333;
     cursor: pointer;
+    transition: 0.3s;
+}
+.nav button:hover {
+    transform: scale(1.1);
+}
+
+/* pages */
+.section { display:none; }
+.active { display:block; }
+
+/* card */
+.box {
+    background: white;
+    color: black;
+    padding: 25px;
+    width: 320px;
+    margin: auto;
+    border-radius: 15px;
+    box-shadow: 0px 10px 25px rgba(0,0,0,0.3);
+    animation: fade 0.5s;
+}
+
+@keyframes fade {
+from{opacity:0; transform:translateY(20px);}
+to{opacity:1;}
 }
 
 input {
-    padding: 5px;
+    padding: 8px;
     margin: 5px;
+    width: 80px;
+    border-radius: 5px;
+    border: 1px solid gray;
+}
+
+.mainbtn {
+    padding: 10px 20px;
+    margin-top: 10px;
+    border:none;
+    border-radius: 10px;
+    background:#667eea;
+    color:white;
+    cursor:pointer;
+}
+.mainbtn:hover{
+    background:#5a67d8;
+}
+
+.resultBox{
+    margin-top:15px;
+    padding:10px;
+    border-radius:10px;
+    background:#f1f1f1;
 }
 </style>
 
@@ -44,10 +91,12 @@ input {
 
 <body>
 
-<h1>📘 Smart Teaching Improvement System</h1>
+<header>✨ AI-Based Teaching Feedback System</header>
 
+<div class="nav">
 <button onclick="showPage('p1')">👤 Individual</button>
 <button onclick="showPage('p2')">📊 Class Analysis</button>
+</div>
 
 <!-- PAGE 1 -->
 <div id="p1" class="section active">
@@ -59,12 +108,14 @@ input {
 Clarity <br><input id="c1" type="number" min="1" max="5"><br>
 Engagement <br><input id="c2" type="number" min="1" max="5"><br>
 Communication <br><input id="c3" type="number" min="1" max="5"><br>
-Doubt Solving <br><input id="c4" type="number" min="1" max="5"><br><br>
+Doubt Solving <br><input id="c4" type="number" min="1" max="5"><br>
 
-<button onclick="analyze()">Analyze</button>
+<button class="mainbtn" onclick="analyze()">Analyze</button>
 
+<div class="resultBox">
 <h3 id="result"></h3>
 <p id="plan"></p>
+</div>
 
 </div>
 
@@ -79,13 +130,14 @@ Doubt Solving <br><input id="c4" type="number" min="1" max="5"><br><br>
 
 <input type="file" id="file"><br><br>
 
-<button onclick="process()">Analyze File</button>
+<button class="mainbtn" onclick="process()">Analyze File</button>
 
+<div class="resultBox">
 <h3 id="result2"></h3>
+<p id="suggestion"></p>
+</div>
 
 <canvas id="chart"></canvas>
-
-<p id="suggestion"></p>
 
 </div>
 
@@ -93,136 +145,116 @@ Doubt Solving <br><input id="c4" type="number" min="1" max="5"><br><br>
 
 <script>
 
-// PAGE SWITCH
+// page switch
 function showPage(id){
 document.getElementById("p1").classList.remove("active");
 document.getElementById("p2").classList.remove("active");
 document.getElementById(id).classList.add("active");
 }
 
-// INDIVIDUAL ANALYSIS
+// individual
 function analyze(){
 
-let a = Number(document.getElementById("c1").value);
-let b = Number(document.getElementById("c2").value);
-let c = Number(document.getElementById("c3").value);
-let d = Number(document.getElementById("c4").value);
+let a = Number(c1.value);
+let b = Number(c2.value);
+let c = Number(c3.value);
+let d = Number(c4.value);
 
-// validation
-if(!a || !b || !c || !d){
-alert("Please fill all values");
+if(!a||!b||!c||!d){
+alert("Fill all values");
 return;
 }
 
-if(a<1||a>5||b<1||b>5||c<1||c>5||d<1||d>5){
-alert("Enter values between 1 to 5 only");
-return;
-}
+let avg=(a+b+c+d)/4;
 
-// average
-let avg = (a+b+c+d)/4;
+let res = avg<=2?"Poor":avg<=3?"Average":avg<=4?"Good":"Excellent";
 
-// result
-let result="";
-if(avg<=2) result="Poor";
-else if(avg<=3) result="Average";
-else if(avg<=4) result="Good";
-else result="Excellent";
+// weakest
+let min=Math.min(a,b,c,d);
+let weak="",sol="";
 
-// weakest area
-let min = Math.min(a,b,c,d);
-let weak="", solution="";
+if(min==a){weak="Clarity"; sol="Use diagrams & simple explanation";}
+else if(min==b){weak="Engagement"; sol="Increase interaction";}
+else if(min==c){weak="Communication"; sol="Speak clearly";}
+else{weak="Doubt Solving"; sol="Give more time to students";}
 
-if(min==a){
-weak="Clarity";
-solution="Use simple language, examples and diagrams";
-}
-else if(min==b){
-weak="Engagement";
-solution="Ask questions and involve students";
-}
-else if(min==c){
-weak="Communication";
-solution="Speak clearly and confidently";
-}
-else{
-weak="Doubt Solving";
-solution="Give more time for doubts";
-}
-
-// output
 document.getElementById("result").innerHTML =
-"Result: "+result+" (Avg "+avg.toFixed(2)+")";
+"Result: "+res+" ("+avg.toFixed(2)+")";
 
 document.getElementById("plan").innerHTML =
-"Weakest Area: "+weak+"<br>Solution: "+solution;
+"⚠ Weak Area: "+weak+"<br>💡 Suggestion: "+sol;
 
 }
 
-// CSV ANALYSIS
+// CSV + GRAPH
 function process(){
 
-let file = document.getElementById("file").files[0];
+let file=document.getElementById("file").files[0];
 
 if(!file){
 alert("Upload CSV file");
 return;
 }
 
-let reader = new FileReader();
+let reader=new FileReader();
 
-reader.onload = function(e){
+reader.onload=function(e){
 
-let rows = e.target.result.split("\n");
+let rows=e.target.result.trim().split("\n");
 
-let sum=0, count=0;
+let sum=0,count=0;
 
 for(let i=1;i<rows.length;i++){
 
-let cols = rows[i].split(",");
+let cols=rows[i].split(",");
 
 for(let j=0;j<cols.length;j++){
 
-let val = Number(cols[j]);
+let val=parseFloat(cols[j]);
 
-if(!isNaN(val) && val>0){
+if(!isNaN(val)){
 sum+=val;
 count++;
 }
 }
 }
 
-let avg = sum/count;
+if(count==0){
+result2.innerHTML="Invalid File ❌";
+return;
+}
 
-document.getElementById("result2").innerHTML =
-"Class Average: "+avg.toFixed(2);
+let avg=sum/count;
+
+result2.innerHTML="📊 Class Average: "+avg.toFixed(2);
 
 // graph
-let ctx = document.getElementById("chart").getContext("2d");
+let ctx=document.getElementById("chart").getContext("2d");
 
 if(window.chart){
 window.chart.destroy();
 }
 
-window.chart = new Chart(ctx,{
+window.chart=new Chart(ctx,{
 type:"bar",
 data:{
-labels:["Average"],
+labels:["Class Avg"],
 datasets:[{
 label:"Score",
-data:[avg]
+data:[avg],
+backgroundColor:["#667eea"]
 }]
 }
 });
 
 // suggestion
 let sug="";
-if(avg<=2) sug="Major improvement needed";
-else if(avg<=3) sug="Improve engagement";
-else if(avg<=4) sug="Good but can improve";
-else sug="Excellent teaching";
+if(avg<=2) sug="⚠ Needs major improvement";
+else if(avg<=3) sug="⚠ Improve engagement";
+else if(avg<=4) sug="👍 Good but improve more";
+else sug="🔥 Excellent teaching";
 
-document.getElementById("suggestion").innerHTML = sug;
+suggestion.innerHTML=sug;
 
 };
 
