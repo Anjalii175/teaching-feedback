@@ -2,16 +2,16 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Teacher-Student Feedback System</title>
+  <title>Smart Feedback Learning System</title>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <style>
     body { font-family: Arial; margin: 20px; background:#f4f4f4; }
     h1 { text-align:center; }
-    .container { display:flex; gap:20px; }
-    .panel { background:white; padding:20px; border-radius:10px; width:50%; box-shadow:0 0 10px rgba(0,0,0,0.1);} 
-    input, select, textarea, button { width:100%; margin:8px 0; padding:8px; }
-    button { background:#ff7a59; color:white; border:none; cursor:pointer; border-radius:6px; }
-    canvas { margin-top:20px; }
+    .container { display:flex; gap:20px; flex-wrap:wrap; }
+    .panel { background:white; padding:20px; border-radius:10px; width:48%; box-shadow:0 0 10px rgba(0,0,0,0.1);} 
+    input, textarea, button { width:100%; margin:8px 0; padding:8px; }
+    button { background:#6c63ff; color:white; border:none; cursor:pointer; border-radius:6px; }
+    iframe { border-radius:10px; margin-top:10px; }
   </style>
 </head>
 <body>
@@ -24,8 +24,8 @@
   <div class="panel">
     <h2>👩‍🏫 Teacher Panel</h2>
 
-    <input type="text" id="topic" placeholder="Topic Name">
-    <input type="text" id="duration" placeholder="Duration of Class">
+    <input type="text" placeholder="Topic Name">
+    <input type="text" placeholder="Duration of Class">
 
     <textarea id="manualData" placeholder="Enter student scores (e.g. 60,70,80)"></textarea>
 
@@ -34,6 +34,10 @@
     <canvas id="chart"></canvas>
 
     <p id="suggestion"></p>
+
+    <h3>📊 View Student Feedback</h3>
+    <!-- 🔴 YAHAN APNA GOOGLE SHEET LINK DAALNA -->
+    <iframe src="https://docs.google.com/spreadsheets/d/YOUR_SHEET_ID/edit?usp=sharing" width="100%" height="300"></iframe>
   </div>
 
   <!-- Student Panel -->
@@ -44,9 +48,11 @@
 
     <p>Click below to fill feedback form:</p>
 
-    <button onclick="openForm()">Fill Feedback Form</button>
+    <!-- 🔴 YAHAN APNA GOOGLE FORM LINK DAALNA -->
+    <button onclick="window.open('https://forms.gle/iNEAdfn5iBWnKDNM8')">
+      Fill Feedback Form
+    </button>
 
-    <p id="response"></p>
   </div>
 
 </div>
@@ -79,10 +85,6 @@ function drawChart() {
 
   let suggestion = avg < 50 ? "⚠️ Students need re-teaching" : "✅ Students understood well";
   document.getElementById("suggestion").innerText = "Average: " + avg.toFixed(2) + "% | " + suggestion;
-}
-
-function openForm() {
-  window.open("https://forms.gle/iNEAdfn5iBWnKDNM8");
 }
 </script>
 
