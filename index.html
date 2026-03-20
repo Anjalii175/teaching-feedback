@@ -1,19 +1,19 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>Teaching Improvement System</title>
+<title>Smart Teaching System</title>
 </head>
 
 <body style="text-align:center; font-family:Arial;">
 
 <h1>Smart Teaching Improvement System</h1>
 
-<h3>Enter Ratings (1–5)</h3>
+<h3>Enter Ratings (1 to 5)</h3>
 
-Clarity <input id="c1"><br><br>
-Engagement <input id="c2"><br><br>
-Communication <input id="c3"><br><br>
-Doubt Solving <input id="c4"><br><br>
+Clarity <input id="c1" type="number"><br><br>
+Engagement <input id="c2" type="number"><br><br>
+Communication <input id="c3" type="number"><br><br>
+Doubt Solving <input id="c4" type="number"><br><br>
 
 <button onclick="analyze()">Analyze</button>
 
@@ -34,6 +34,11 @@ alert("Fill all values");
 return;
 }
 
+if(a<1||a>5||b<1||b>5||c<1||c>5||d<1||d>5){
+alert("Enter values between 1 to 5 only");
+return;
+}
+
 let avg = (a+b+c+d)/4;
 
 // RESULT
@@ -43,43 +48,34 @@ else if(avg<=3) result="Average";
 else if(avg<=4) result="Good";
 else result="Excellent";
 
-// 🔥 FIND WEAKEST AREA
+// WEAKEST AREA
 let min = Math.min(a,b,c,d);
 let weak = "";
-let solution =
+let solution = "";
 
-let avg = (a+b+c+d)/4;
-
-let result="";
-if(avg<=2) result="Poor";
-else if(avg<=3) result="Average";
-else if(avg<=4) result="Good";
-else result="Excellent";
-
-let plan="";
-
-// 🔥 REAL PROBLEM SOLVER
-if(a<3){
-plan+="Clarity low → Use examples, diagrams<br>";
+if(min == a){
+weak = "Clarity";
+solution = "Use simple language, real-life examples and diagrams";
 }
-if(b<3){
-plan+="Engagement low → Ask questions, interact<br>";
+else if(min == b){
+weak = "Engagement";
+solution = "Ask questions, involve students and use activities";
 }
-if(c<3){
-plan+="Communication issue → Speak clearly<br>";
+else if(min == c){
+weak = "Communication";
+solution = "Speak clearly and maintain eye contact";
 }
-if(d<3){
-plan+="Doubt solving weak → Give extra time<br>";
+else{
+weak = "Doubt Solving";
+solution = "Give more time to students and solve doubts properly";
 }
 
-if(plan==""){
-plan="No major issues. Teaching is effective.";
-}
-
+// OUTPUT
 document.getElementById("result").innerHTML =
-"Result: "+result+" (Avg "+avg.toFixed(2)+")";
+"Result: "+result+" (Average "+avg.toFixed(2)+")";
 
-document.getElementById("plan").innerHTML = plan;
+document.getElementById("plan").innerHTML =
+"Weakest Area: "+weak+"<br>Solution: "+solution;
 
 }
 
