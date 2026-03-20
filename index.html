@@ -7,83 +7,62 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <style>
-body {
+body{
     font-family: Arial;
-    text-align: center;
-    margin: 0;
+    text-align:center;
+    margin:0;
     background: linear-gradient(135deg,#667eea,#764ba2);
-    color: white;
-}
-
-/* header */
-header {
-    padding: 20px;
-    font-size: 24px;
-    font-weight: bold;
-}
-
-/* nav buttons */
-.nav button {
-    padding: 10px 20px;
-    margin: 10px;
-    border: none;
-    border-radius: 20px;
-    background: white;
-    color: #333;
-    cursor: pointer;
-    transition: 0.3s;
-}
-.nav button:hover {
-    transform: scale(1.1);
-}
-
-/* pages */
-.section { display:none; }
-.active { display:block; }
-
-/* card */
-.box {
-    background: white;
-    color: black;
-    padding: 25px;
-    width: 320px;
-    margin: auto;
-    border-radius: 15px;
-    box-shadow: 0px 10px 25px rgba(0,0,0,0.3);
-    animation: fade 0.5s;
-}
-
-@keyframes fade {
-from{opacity:0; transform:translateY(20px);}
-to{opacity:1;}
-}
-
-input {
-    padding: 8px;
-    margin: 5px;
-    width: 80px;
-    border-radius: 5px;
-    border: 1px solid gray;
-}
-
-.mainbtn {
-    padding: 10px 20px;
-    margin-top: 10px;
-    border:none;
-    border-radius: 10px;
-    background:#667eea;
     color:white;
+}
+
+header{
+    padding:20px;
+    font-size:24px;
+    font-weight:bold;
+}
+
+.nav button{
+    padding:10px 20px;
+    margin:10px;
+    border:none;
+    border-radius:20px;
+    background:white;
     cursor:pointer;
 }
-.mainbtn:hover{
-    background:#5a67d8;
+
+.section{display:none;}
+.active{display:block;}
+
+.box{
+    background:white;
+    color:black;
+    padding:20px;
+    width:320px;
+    margin:auto;
+    border-radius:15px;
 }
 
-.resultBox{
-    margin-top:15px;
+input{
+    padding:6px;
+    margin:5px;
+    width:80px;
+}
+
+button{
+    padding:10px;
+    margin-top:10px;
+    background:#667eea;
+    color:white;
+    border:none;
+    border-radius:8px;
+    cursor:pointer;
+}
+
+.result{
+    margin-top:10px;
+    background:#f1f1f1;
     padding:10px;
     border-radius:10px;
-    background:#f1f1f1;
 }
 </style>
 
@@ -94,14 +73,14 @@ input {
 <header>✨ AI-Based Teaching Feedback System</header>
 
 <div class="nav">
-<button onclick="showPage('p1')">👤 Individual</button>
-<button onclick="showPage('p2')">📊 Class Analysis</button>
+<button onclick="showPage('p1')">Individual</button>
+<button onclick="showPage('p2')">Class Analysis</button>
 </div>
 
 <!-- PAGE 1 -->
 <div id="p1" class="section active">
 
-<h3>Individual Analysis</h3>
+<h3>Individual Feedback</h3>
 
 <div class="box">
 
@@ -110,31 +89,30 @@ Engagement <br><input id="c2" type="number" min="1" max="5"><br>
 Communication <br><input id="c3" type="number" min="1" max="5"><br>
 Doubt Solving <br><input id="c4" type="number" min="1" max="5"><br>
 
-<button class="mainbtn" onclick="analyze()">Analyze</button>
+<button onclick="analyze()">Analyze</button>
 
-<div class="resultBox">
-<h3 id="result"></h3>
+<div class="result">
+<h3 id="res1"></h3>
 <p id="plan"></p>
 </div>
 
 </div>
-
 </div>
 
 <!-- PAGE 2 -->
 <div id="p2" class="section">
 
-<h3>Class Analysis (Upload CSV)</h3>
+<h3>Upload CSV</h3>
 
 <div class="box">
 
-<input type="file" id="file"><br><br>
+<input type="file" id="file"><br>
 
-<button class="mainbtn" onclick="process()">Analyze File</button>
+<button onclick="process()">Analyze File</button>
 
-<div class="resultBox">
-<h3 id="result2"></h3>
-<p id="suggestion"></p>
+<div class="result">
+<h3 id="res2"></h3>
+<p id="extra"></p>
 </div>
 
 <canvas id="chart"></canvas>
@@ -155,10 +133,10 @@ document.getElementById(id).classList.add("active");
 // individual
 function analyze(){
 
-let a = Number(c1.value);
-let b = Number(c2.value);
-let c = Number(c3.value);
-let d = Number(c4.value);
+let a=Number(c1.value);
+let b=Number(c2.value);
+let c=Number(c3.value);
+let d=Number(c4.value);
 
 if(!a||!b||!c||!d){
 alert("Fill all values");
@@ -169,24 +147,22 @@ let avg=(a+b+c+d)/4;
 
 let res = avg<=2?"Poor":avg<=3?"Average":avg<=4?"Good":"Excellent";
 
-// weakest
 let min=Math.min(a,b,c,d);
-let weak="",sol="";
 
-if(min==a){weak="Clarity"; sol="Use diagrams & simple explanation";}
-else if(min==b){weak="Engagement"; sol="Increase interaction";}
-else if(min==c){weak="Communication"; sol="Speak clearly";}
-else{weak="Doubt Solving"; sol="Give more time to students";}
+let weak="";
+if(min==a) weak="Clarity";
+else if(min==b) weak="Engagement";
+else if(min==c) weak="Communication";
+else weak="Doubt Solving";
 
-document.getElementById("result").innerHTML =
+document.getElementById("res1").innerHTML =
 "Result: "+res+" ("+avg.toFixed(2)+")";
 
 document.getElementById("plan").innerHTML =
-"⚠ Weak Area: "+weak+"<br>💡 Suggestion: "+sol;
-
+"⚠ Weak Area: "+weak;
 }
 
-// CSV + GRAPH
+// CSV PROCESS
 function process(){
 
 let file=document.getElementById("file").files[0];
@@ -204,32 +180,65 @@ let rows=e.target.result.trim().split("\n");
 
 let sum=0,count=0;
 
+let clarity=0,eng=0,comm=0,doubt=0;
+
 for(let i=1;i<rows.length;i++){
 
 let cols=rows[i].split(",");
 
-for(let j=0;j<cols.length;j++){
+let c1=parseFloat(cols[0])||0;
+let c2=parseFloat(cols[1])||0;
+let c3=parseFloat(cols[2])||0;
+let c4=parseFloat(cols[3])||0;
 
-let val=parseFloat(cols[j]);
+clarity+=c1;
+eng+=c2;
+comm+=c3;
+doubt+=c4;
 
-if(!isNaN(val)){
-sum+=val;
-count++;
-}
-}
+sum+=c1+c2+c3+c4;
+count+=4;
 }
 
 if(count==0){
-result2.innerHTML="Invalid File ❌";
+res2.innerHTML="Invalid File ❌";
 return;
 }
 
 let avg=sum/count;
 
-result2.innerHTML="📊 Class Average: "+avg.toFixed(2);
+let n=rows.length-1;
 
-// graph
-let ctx=document.getElementById("chart").getContext("2d");
+clarity/=n;
+eng/=n;
+comm/=n;
+doubt/=n;
+
+// strong + weak
+let max=Math.max(clarity,eng,comm,doubt);
+let min=Math.min(clarity,eng,comm,doubt);
+
+let strong="",weak="";
+
+if(max==clarity) strong="Clarity";
+else if(max==eng) strong="Engagement";
+else if(max==comm) strong="Communication";
+else strong="Doubt Solving";
+
+if(min==clarity) weak="Clarity";
+else if(min==eng) weak="Engagement";
+else if(min==comm) weak="Communication";
+else weak="Doubt Solving";
+
+// result
+document.getElementById("res2").innerHTML =
+"Class Avg: "+avg.toFixed(2);
+
+document.getElementById("extra").innerHTML =
+"⭐ Strong: "+strong+"<br>⚠ Weak: "+weak;
+
+// GRAPH (IMPORTANT FIX)
+let ctx=document.getElementById("chart");
 
 if(window.chart){
 window.chart.destroy();
@@ -238,23 +247,14 @@ window.chart.destroy();
 window.chart=new Chart(ctx,{
 type:"bar",
 data:{
-labels:["Class Avg"],
+labels:["Clarity","Engagement","Communication","Doubt"],
 datasets:[{
-label:"Score",
-data:[avg],
-backgroundColor:["#667eea"]
+label:"Average Scores",
+data:[clarity,eng,comm,doubt],
+backgroundColor:["red","blue","green","orange"]
 }]
 }
 });
-
-// suggestion
-let sug="";
-if(avg<=2) sug="⚠ Needs major improvement";
-else if(avg<=3) sug="⚠ Improve engagement";
-else if(avg<=4) sug="👍 Good but improve more";
-else sug="🔥 Excellent teaching";
-
-suggestion.innerHTML=sug;
 
 };
 
