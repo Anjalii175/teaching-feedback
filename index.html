@@ -1,98 +1,27 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>Teaching Feedback System</title>
-
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
-<style>
-body {
-    font-family: Arial;
-    text-align: center;
-}
-
-.section {
-    display: none;
-}
-
-.active {
-    display: block;
-}
-
-button {
-    margin: 10px;
-    padding: 10px;
-}
-
-.card {
-    border: 1px solid black;
-    padding: 20px;
-    width: 300px;
-    margin: auto;
-}
-</style>
-
+<title>Teaching Improvement System</title>
 </head>
 
-<body>
+<body style="text-align:center; font-family:Arial;">
 
-<h1>Teaching Feedback System</h1>
+<h1>Smart Teaching Improvement System</h1>
 
-<button onclick="showPage('p1')">Individual</button>
-<button onclick="showPage('p2')">Class Analysis</button>
+<h3>Enter Ratings (1–5)</h3>
 
-<!-- PAGE 1 -->
-<div id="p1" class="section active">
+Clarity <input id="c1"><br><br>
+Engagement <input id="c2"><br><br>
+Communication <input id="c3"><br><br>
+Doubt Solving <input id="c4"><br><br>
 
-<h3>Individual Analysis</h3>
+<button onclick="analyze()">Analyze</button>
 
-<div class="card">
-
-Clarity <br><input id="c1" type="number"><br>
-Engagement <br><input id="c2" type="number"><br>
-Communication <br><input id="c3" type="number"><br>
-Doubt <br><input id="c4" type="number"><br><br>
-
-<button onclick="analyze()">Check</button>
-
-<h3 id="result1"></h3>
-<p id="suggestion1"></p>
-
-</div>
-
-</div>
-
-<!-- PAGE 2 -->
-<div id="p2" class="section">
-
-<h3>Class Analysis</h3>
-
-<div class="card">
-
-<input type="file" id="file"><br><br>
-
-<button onclick="process()">Upload</button>
-
-<h3 id="result2"></h3>
-
-<canvas id="chart"></canvas>
-
-<p id="suggestion2"></p>
-
-</div>
-
-</div>
+<h2 id="result"></h2>
+<p id="plan"></p>
 
 <script>
 
-// PAGE SWITCH
-function showPage(id){
-document.getElementById("p1").classList.remove("active");
-document.getElementById("p2").classList.remove("active");
-document.getElementById(id).classList.add("active");
-}
-
-// INDIVIDUAL
 function analyze(){
 
 let a = Number(document.getElementById("c1").value);
@@ -101,104 +30,42 @@ let c = Number(document.getElementById("c3").value);
 let d = Number(document.getElementById("c4").value);
 
 if(!a || !b || !c || !d){
-alert("Fill all fields");
+alert("Fill all values");
 return;
 }
 
 let avg = (a+b+c+d)/4;
 
-let res="";
-if(avg<=2) res="Poor";
-else if(avg<=3) res="Average";
-else if(avg<=4) res="Good";
-else res="Excellent";
+let result="";
+if(avg<=2) result="Poor";
+else if(avg<=3) result="Average";
+else if(avg<=4) result="Good";
+else result="Excellent";
 
-// improvement
-let sug="";
+let plan="";
 
-if(a<3) sug+="Improve clarity<br>";
-if(b<3) sug+="Increase engagement<br>";
-if(c<3) sug+="Better communication<br>";
-if(d<3) sug+="Focus on doubts<br>";
-
-if(sug=="") sug="Great teaching";
-
-document.getElementById("result1").innerHTML =
-"Result: "+res+" (Avg "+avg.toFixed(2)+")";
-
-document.getElementById("suggestion1").innerHTML = sug;
-
+// 🔥 REAL PROBLEM SOLVER
+if(a<3){
+plan+="Clarity low → Use examples, diagrams<br>";
+}
+if(b<3){
+plan+="Engagement low → Ask questions, interact<br>";
+}
+if(c<3){
+plan+="Communication issue → Speak clearly<br>";
+}
+if(d<3){
+plan+="Doubt solving weak → Give extra time<br>";
 }
 
-// CSV
-function process(){
-
-let file = document.getElementById("file").files[0];
-
-if(!file){
-alert("Upload file");
-return;
+if(plan==""){
+plan="No major issues. Teaching is effective.";
 }
 
-let reader = new FileReader();
+document.getElementById("result").innerHTML =
+"Result: "+result+" (Avg "+avg.toFixed(2)+")";
 
-reader.onload = function(e){
-
-let rows = e.target.result.split("\n");
-
-let sum = 0;
-let count = 0;
-
-for(let i=1;i<rows.length;i++){
-
-let cols = rows[i].split(",");
-
-for(let j=0;j<cols.length;j++){
-
-let val = Number(cols[j]);
-
-if(!isNaN(val) && val>0){
-sum += val;
-count++;
-}
-}
-}
-
-let avg = sum/count;
-
-document.getElementById("result2").innerHTML =
-"Class Average: "+avg.toFixed(2);
-
-// graph
-let ctx = document.getElementById("chart").getContext("2d");
-
-if(window.chart){
-window.chart.destroy();
-}
-
-window.chart = new Chart(ctx,{
-type:"bar",
-data:{
-labels:["Average"],
-datasets:[{
-label:"Score",
-data:[avg]
-}]
-}
-});
-
-// suggestion
-let sug="";
-if(avg<=2) sug="Need major improvement";
-else if(avg<=3) sug="Improve engagement";
-else if(avg<=4) sug="Good but can improve";
-else sug="Excellent teaching";
-
-document.getElementById("suggestion2").innerHTML = sug;
-
-};
-
-reader.readAsText(file);
+document.getElementById("plan").innerHTML = plan;
 
 }
 
