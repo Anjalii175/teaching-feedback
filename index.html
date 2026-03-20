@@ -1,39 +1,60 @@
 <!DOCTYPE html>
 <html>
-
 <head>
-<title>AI Teaching Feedback System</title>
+<title>Smart Teaching Feedback Analyzer</title>
 
-<!-- Chart.js -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <style>
+
 body{
-    font-family: Arial;
+    font-family: 'Segoe UI', sans-serif;
     text-align:center;
     margin:0;
     background: linear-gradient(135deg,#667eea,#764ba2);
     color:white;
 }
 
-h1{padding:15px;}
+h1{
+    margin-top:20px;
+    font-size:30px;
+}
+
+p{
+    font-size:14px;
+    opacity:0.9;
+}
 
 button{
-    padding:10px 20px;
+    padding:12px 25px;
     margin:10px;
     border:none;
-    border-radius:20px;
-    background:white;
+    border-radius:25px;
+    background: linear-gradient(45deg,#ff7e5f,#feb47b);
+    color:white;
+    font-weight:bold;
     cursor:pointer;
+    transition:0.3s;
+}
+
+button:hover{
+    transform:scale(1.1);
 }
 
 .box{
     background:white;
     color:black;
-    padding:20px;
-    width:330px;
+    padding:25px;
+    width:360px;
     margin:auto;
-    border-radius:15px;
+    border-radius:20px;
+    box-shadow:0px 10px 25px rgba(0,0,0,0.3);
+    animation:fade 0.5s;
+}
+
+@keyframes fade{
+    from{opacity:0; transform:translateY(20px);}
+    to{opacity:1;}
 }
 
 .section{display:none;}
@@ -41,28 +62,35 @@ button{
 
 input{
     margin:5px;
-    padding:5px;
-    width:70px;
+    padding:6px;
+    width:80px;
 }
 
 .result{
-    margin-top:10px;
-    padding:10px;
+    margin-top:15px;
+    padding:15px;
     background:#f1f1f1;
     border-radius:10px;
+    font-weight:bold;
 }
+
+canvas{
+    margin-top:20px;
+}
+
 </style>
 
 </head>
 
 <body>
 
-<h1>✨ AI-Based Teaching Feedback System</h1>
+<h1>✨ Smart Teaching Feedback Analyzer</h1>
+<p>Analyze teaching performance using student feedback data 📊</p>
 
 <button onclick="showPage('p1')">👤 Individual</button>
 <button onclick="showPage('p2')">📊 Class Analysis</button>
 
-<!-- PAGE 1 -->
+<!-- INDIVIDUAL -->
 <div id="p1" class="section active">
 
 <h3>Individual Analysis</h3>
@@ -84,7 +112,7 @@ Doubt Solving <br><input id="c4" type="number" min="1" max="5"><br>
 </div>
 </div>
 
-<!-- PAGE 2 -->
+<!-- CLASS ANALYSIS -->
 <div id="p2" class="section">
 
 <h3>Class Analysis (Upload CSV)</h3>
@@ -114,7 +142,7 @@ document.getElementById("p2").classList.remove("active");
 document.getElementById(id).classList.add("active");
 }
 
-// INDIVIDUAL ANALYSIS
+// INDIVIDUAL
 function analyze(){
 
 let a = Number(document.getElementById("c1").value);
@@ -131,24 +159,23 @@ let avg = (a+b+c+d)/4;
 
 let res = avg<=2?"Poor":avg<=3?"Average":avg<=4?"Good":"Excellent";
 
-// detailed suggestions
 let sug="";
 
 if(a<3){
-sug+="🔹 Improve clarity using simple explanation & diagrams.<br>";
+sug+="🔹 Improve clarity using examples and diagrams.<br>";
 }
 if(b<3){
-sug+="🔹 Increase engagement by asking questions & interaction.<br>";
+sug+="🔹 Increase engagement through interaction.<br>";
 }
 if(c<3){
-sug+="🔹 Improve communication and speaking clarity.<br>";
+sug+="🔹 Improve communication skills.<br>";
 }
 if(d<3){
-sug+="🔹 Give more time for doubt solving.<br>";
+sug+="🔹 Focus more on doubt solving.<br>";
 }
 
 if(sug===""){
-sug="🎉 Excellent teaching performance. Keep it up!";
+sug="🎉 Excellent teaching performance!";
 }
 
 document.getElementById("r1").innerHTML =
@@ -198,7 +225,7 @@ count++;
 }
 
 if(count==0){
-document.getElementById("r2").innerHTML="❌ Invalid CSV file";
+document.getElementById("r2").innerHTML="❌ Invalid CSV data";
 return;
 }
 
@@ -210,7 +237,10 @@ doubt/=count;
 
 let avg = (clarity+eng+comm+doubt)/4;
 
-// strong + weak
+// performance
+let performance = avg<=2?"Poor":avg<=3?"Average":avg<=4?"Good":"Excellent";
+
+// strong & weak
 let arr = [clarity,eng,comm,doubt];
 let names = ["Clarity","Engagement","Communication","Doubt Solving"];
 
@@ -227,17 +257,37 @@ else if(weak==="Engagement"){
 improve="Use interactive teaching methods.";
 }
 else if(weak==="Communication"){
-improve="Improve clarity and confidence in speaking.";
+improve="Improve clarity and confidence.";
 }
 else{
-improve="Focus more on doubt-solving sessions.";
+improve="Encourage more doubt solving.";
 }
 
+// insight
+let insight="";
+
+if(performance==="Excellent"){
+insight="Students are highly satisfied.";
+}
+else if(performance==="Good"){
+insight="Teaching is effective with scope for improvement.";
+}
+else if(performance==="Average"){
+insight="Teaching needs improvement.";
+}
+else{
+insight="Immediate improvement required.";
+}
+
+// display
 document.getElementById("r2").innerHTML =
-"📊 Class Average: "+avg.toFixed(2);
+"📊 Class Avg: "+avg.toFixed(2)+" ("+performance+")";
 
 document.getElementById("s2").innerHTML =
-"⭐ Strong Area: "+strong+"<br>⚠ Weak Area: "+weak+"<br>💡 Improvement: "+improve;
+"⭐ Strong: "+strong+
+"<br>⚠ Weak: "+weak+
+"<br>💡 Improve: "+improve+
+"<br>📌 Insight: "+insight;
 
 // GRAPH
 let ctx = document.getElementById("chart").getContext("2d");
@@ -251,9 +301,9 @@ type:"bar",
 data:{
 labels:names,
 datasets:[{
-label:"Average Score",
+label:"Average Scores",
 data:arr,
-backgroundColor:["red","blue","green","orange"]
+backgroundColor:["#ff6b6b","#4dabf7","#51cf66","#fcc419"]
 }]
 }
 });
