@@ -1,91 +1,140 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>Research-Based Teaching Effectiveness</title>
+<title>Teaching Feedback Analysis</title>
+
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2"></script>
+
 <style>
-body { font-family: Arial; text-align: center; margin: 30px; background-color: #f0f0f0; }
-h1 { color: darkblue; }
-h3 { color: #333; }
+body {
+    font-family: Arial;
+    margin: 0;
+    background-color: #f2f2f2;
+}
+
+.navbar {
+    background: blue;
+    color: white;
+    padding: 15px;
+    text-align: center;
+}
+
+.section {
+    padding: 30px;
+    text-align: center;
+}
+
+.box {
+    margin: 10px;
+}
+
+button {
+    padding: 10px 20px;
+    background: blue;
+    color: white;
+    border: none;
+}
+
+input {
+    width: 50px;
+}
 </style>
 </head>
+
 <body>
 
-<h1>Teaching Effectiveness (Research-Based)</h1>
-<p>Website calculates teaching effectiveness based on research dataset</p>
+<div class="navbar">
+<h2>Teaching Feedback Analysis System</h2>
+</div>
+
+<div class="section">
+<h3>About Project</h3>
+<p>
+This project analyzes teaching effectiveness using student feedback. 
+It helps in identifying strengths and areas of improvement in teaching.
+</p>
+</div>
+
+<div class="section">
+<h3>How It Works</h3>
+<p>
+1. Students give feedback ratings<br>
+2. System calculates average score<br>
+3. Result and suggestions are generated<br>
+4. Graph shows visual analysis
+</p>
+</div>
+
+<div class="section">
+<h3>Live Feedback System</h3>
+
+<div class="box">Clarity: <input type="number" id="c1" min="1" max="5"></div>
+<div class="box">Engagement: <input type="number" id="c2" min="1" max="5"></div>
+<div class="box">Communication: <input type="number" id="c3" min="1" max="5"></div>
+<div class="box">Doubt Solving: <input type="number" id="c4" min="1" max="5"></div>
+
+<br>
+<button onclick="calculate()">Check Result</button>
 
 <h3 id="result"></h3>
-<canvas id="myChart" width="400" height="250"></canvas>
+<p id="suggestion"></p>
+
+<canvas id="myChart" width="300" height="200"></canvas>
+</div>
+
+<div class="section">
+<h3>Conclusion</h3>
+<p>
+Teaching effectiveness can be improved by analyzing student feedback 
+and focusing on weak areas.
+</p>
+</div>
 
 <script>
-// ----- Example research dataset -----
-// Replace this with your real dataset (CSV converted to JSON)
-const researchData = [
-    {clarity:4, engagement:3, communication:4, doubt:5},
-    {clarity:3, engagement:4, communication:3, doubt:4},
-    {clarity:5, engagement:5, communication:4, doubt:5},
-    {clarity:2, engagement:3, communication:3, doubt:2}
-];
+function calculate(){
 
-// ----- Step 1: Calculate average score per parameter -----
-let sumClarity=0, sumEng=0, sumComm=0, sumDoubt=0;
-researchData.forEach(d => {
-    sumClarity += d.clarity;
-    sumEng += d.engagement;
-    sumComm += d.communication;
-    sumDoubt += d.doubt;
+let a = Number(document.getElementById("c1").value);
+let b = Number(document.getElementById("c2").value);
+let c = Number(document.getElementById("c3").value);
+let d = Number(document.getElementById("c4").value);
+
+let avg = (a+b+c+d)/4;
+
+let res = "";
+if(avg<=2) res="Poor";
+else if(avg<=3) res="Average";
+else if(avg<=4) res="Good";
+else res="Excellent";
+
+let sug="";
+
+if(a<3) sug+="Improve clarity<br>";
+if(b<3) sug+="Increase engagement<br>";
+if(c<3) sug+="Improve communication<br>";
+if(d<3) sug+="Better doubt solving<br>";
+
+if(sug=="") sug="Good teaching performance";
+
+document.getElementById("result").innerHTML="Result: "+res+" (Avg:"+avg.toFixed(2)+")";
+document.getElementById("suggestion").innerHTML=sug;
+
+if(window.chart){
+window.chart.destroy();
+}
+
+let ctx=document.getElementById("myChart").getContext("2d");
+
+window.chart=new Chart(ctx,{
+type:"bar",
+data:{
+labels:["Clarity","Engagement","Communication","Doubt"],
+datasets:[{
+label:"Ratings",
+data:[a,b,c,d]
+}]
+}
 });
-
-let n = researchData.length;
-let avgClarity = sumClarity/n;
-let avgEng = sumEng/n;
-let avgComm = sumComm/n;
-let avgDoubt = sumDoubt/n;
-
-// ----- Step 2: Overall average -----
-let overallAvg = (avgClarity + avgEng + avgComm + avgDoubt)/4;
-
-// ----- Step 3: Determine category -----
-let resultText = "";
-if(overallAvg <= 2) resultText="Poor";
-else if(overallAvg <= 3) resultText="Average";
-else if(overallAvg <= 4) resultText="Good";
-else resultText="Excellent";
-
-// ----- Step 4: Display result -----
-document.getElementById("result").innerHTML = 
-"Teaching Effectiveness: <b>" + resultText + "</b> (Average Score: " + overallAvg.toFixed(2) + ")";
-
-// ----- Step 5: Draw graph -----
-const ctx = document.getElementById("myChart").getContext("2d");
-new Chart(ctx,{
-    type:'bar',
-    data:{
-        labels:['Clarity','Engagement','Communication','Doubt Solving'],
-        datasets:[{
-            label:'Average Ratings',
-            data:[avgClarity, avgEng, avgComm, avgDoubt],
-            backgroundColor:['#3498db','#2ecc71','#9b59b6','#f39c12']
-        }]
-    },
-    options:{
-        responsive:true,
-        plugins:{
-            legend:{ display:false },
-            datalabels:{
-                display:true,
-                color:'black',
-                anchor:'end',
-                align:'end',
-                font:{ weight:'bold', size:14 }
-            }
-        },
-        scales:{ y:{ beginAtZero:true, max:5, ticks:{ stepSize:1 } } },
-        animation:{ duration:1000, easing:'easeOutBounce' }
-    },
-    plugins:[ChartDataLabels]
-});
+}
 </script>
 
 </body>
