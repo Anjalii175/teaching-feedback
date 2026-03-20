@@ -3,7 +3,7 @@
 <head>
 <title>Smart Teaching Feedback Analyzer</title>
 
-<!-- FIXED Chart.js -->
+<!-- Chart.js -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
 
 <style>
@@ -56,6 +56,7 @@ input{
 
 canvas{
     margin-top:20px;
+    max-width: 100%;
 }
 </style>
 
@@ -68,7 +69,7 @@ canvas{
 <button onclick="show('p1')">Individual</button>
 <button onclick="show('p2')">Class</button>
 
-<!-- Individual -->
+<!-- Individual Analysis -->
 <div id="p1" class="section active">
 <div class="box">
 
@@ -89,7 +90,7 @@ Doubt <input id="c4" type="number" min="1" max="5"><br>
 </div>
 </div>
 
-<!-- Class -->
+<!-- Class Analysis -->
 <div id="p2" class="section">
 <div class="box">
 
@@ -101,6 +102,7 @@ Doubt <input id="c4" type="number" min="1" max="5"><br>
 <div class="result">
 <h3 id="r2"></h3>
 <p id="s2"></p>
+<p id="improve"></p> <!-- Improvement suggestions -->
 </div>
 
 <canvas id="chart"></canvas>
@@ -110,120 +112,138 @@ Doubt <input id="c4" type="number" min="1" max="5"><br>
 
 <script>
 
+// Toggle sections
 function show(id){
-document.getElementById("p1").classList.remove("active");
-document.getElementById("p2").classList.remove("active");
-document.getElementById(id).classList.add("active");
+    document.getElementById("p1").classList.remove("active");
+    document.getElementById("p2").classList.remove("active");
+    document.getElementById(id).classList.add("active");
 }
 
-// Individual
+// Individual Analysis
 function analyze(){
 
-let a=Number(document.getElementById("c1").value);
-let b=Number(document.getElementById("c2").value);
-let c=Number(document.getElementById("c3").value);
-let d=Number(document.getElementById("c4").value);
+    let a = Number(document.getElementById("c1").value);
+    let b = Number(document.getElementById("c2").value);
+    let c = Number(document.getElementById("c3").value);
+    let d = Number(document.getElementById("c4").value);
 
-if(!a||!b||!c||!d){
-alert("Fill all values");
-return;
+    if(!a||!b||!c||!d){
+        alert("Fill all values");
+        return;
+    }
+
+    let avg = (a+b+c+d)/4;
+
+    let res = avg<=2?"Poor":avg<=3?"Average":avg<=4?"Good":"Excellent";
+
+    document.getElementById("r1").innerHTML =
+        "Result: "+res+" ("+avg.toFixed(2)+")";
+
+    document.getElementById("s1").innerHTML =
+        "Focus on improving low-score areas.";
 }
 
-let avg=(a+b+c+d)/4;
-
-let res = avg<=2?"Poor":avg<=3?"Average":avg<=4?"Good":"Excellent";
-
-document.getElementById("r1").innerHTML =
-"Result: "+res+" ("+avg.toFixed(2)+")";
-
-document.getElementById("s1").innerHTML =
-"Focus on improving low-score areas.";
-}
-
-// Class CSV
+// Class CSV Analysis
 function process(){
 
-let file=document.getElementById("file").files[0];
+    let file = document.getElementById("file").files[0];
 
-if(!file){
-alert("Upload CSV");
-return;
-}
+    if(!file){
+        alert("Upload CSV");
+        return;
+    }
 
-let reader=new FileReader();
+    let reader = new FileReader();
 
-reader.onload=function(e){
+    reader.onload = function(e){
 
-let lines=e.target.result.trim().split(/\r?\n/);
+        let lines = e.target.result.trim().split(/\r?\n/);
 
-let clarity=0,eng=0,comm=0,doubt=0;
-let count=0;
+        let clarity=0, eng=0, comm=0, doubt=0;
+        let count=0;
 
-for(let i=1;i<lines.length;i++){
+        for(let i=1; i<lines.length; i++){ // skip header if any
 
-let row=lines[i].split(",");
+            let row = lines[i].split(",");
 
-if(row.length<4) continue;
+            if(row.length<4) continue;
 
-let v1=parseFloat(row[0]);
-let v2=parseFloat(row[1]);
-let v3=parseFloat(row[2]);
-let v4=parseFloat(row[3]);
+            let v1 = parseFloat(row[0]);
+            let v2 = parseFloat(row[1]);
+            let v3 = parseFloat(row[2]);
+            let v4 = parseFloat(row[3]);
 
-if(isNaN(v1)||isNaN(v2)||isNaN(v3)||isNaN(v4)) continue;
+            if(isNaN(v1)||isNaN(v2)||isNaN(v3)||isNaN(v4)) continue;
 
-clarity+=v1;
-eng+=v2;
-comm+=v3;
-doubt+=v4;
+            clarity += v1;
+            eng += v2;
+            comm += v3;
+            doubt += v4;
 
-count++;
-}
+            count++;
+        }
 
-if(count==0){
-document.getElementById("r2").innerHTML="Invalid CSV ❌";
-return;
-}
+        if(count==0){
+            document.getElementById("r2").innerHTML="Invalid CSV ❌";
+            document.getElementById("s2").innerHTML="";
+            document.getElementById("improve").innerHTML="";
+            return;
+        }
 
-clarity/=count;
-eng/=count;
-comm/=count;
-doubt/=count;
+        clarity /= count;
+        eng /= count;
+        comm /= count;
+        doubt /= count;
 
-let avg=(clarity+eng+comm+doubt)/4;
+        let avg = (clarity+eng+comm+doubt)/4;
 
-document.getElementById("r2").innerHTML =
-"Class Avg: "+avg.toFixed(2);
+        document.getElementById("r2").innerHTML =
+            "Class Avg: "+avg.toFixed(2);
 
-document.getElementById("s2").innerHTML =
-"Analysis Complete ✔";
+        document.getElementById("s2").innerHTML =
+            "Analysis Complete ✔";
 
-// GRAPH (WORKING)
-let canvas=document.getElementById("chart");
+        // Improvement suggestions
+        let suggestions = [];
+        if(clarity<3) suggestions.push("Improve Clarity");
+        if(eng<3) suggestions.push("Increase Engagement");
+        if(comm<3) suggestions.push("Enhance Communication");
+        if(doubt<3) suggestions.push("Better Doubt Resolution");
 
-if(window.chart){
-window.chart.destroy();
-}
+        document.getElementById("improve").innerHTML = 
+            suggestions.length>0 ? "Suggestions: "+suggestions.join(", ") : "All areas are strong ✔";
 
-window.chart=new Chart(canvas,{
-type:"bar",
-data:{
-labels:["Clarity","Engagement","Communication","Doubt"],
-datasets:[{
-label:"Scores",
-data:[clarity,eng,comm,doubt]
-}]
-},
-options:{
-scales:{
-y:{beginAtZero:true,max:5}
-}
-}
-});
+        // GRAPH
+        let canvas = document.getElementById("chart");
 
-};
+        if(window.chart){
+            window.chart.destroy();
+        }
 
-reader.readAsText(file);
+        window.chart = new Chart(canvas,{
+            type:"bar",
+            data:{
+                labels:["Clarity","Engagement","Communication","Doubt"],
+                datasets:[{
+                    label:"Average Scores",
+                    data:[clarity,eng,comm,doubt],
+                    backgroundColor:['#ff6384','#36a2eb','#ffce56','#4bc0c0']
+                }]
+            },
+            options:{
+                scales:{
+                    y:{beginAtZero:true,max:5}
+                },
+                plugins:{
+                    legend:{display:false},
+                    tooltip:{enabled:true}
+                }
+            }
+        });
+
+    };
+
+    reader.readAsText(file);
 }
 
 </script>
