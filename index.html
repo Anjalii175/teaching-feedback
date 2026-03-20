@@ -1,170 +1,128 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>Teaching Feedback Analysis</title>
-
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<title>Smart Teaching Analyzer</title>
 
 <style>
-body {
-    font-family: Arial;
-    text-align: center;
-    margin: 30px;
-    background-color: #f2f2f2;
-}
+body { font-family: Arial; text-align: center; background:#f2f2f2; }
 
-h1 {
-    color: darkblue;
-}
+.box { margin: 10px; }
 
-.box {
-    margin: 10px;
-}
+button { padding:10px; background:blue; color:white; border:none; }
 
-input {
-    width: 50px;
-    padding: 5px;
-}
-
-button {
-    padding: 10px 20px;
-    background-color: blue;
-    color: white;
-    border: none;
-    border-radius: 5px;
-}
-
-#bar {
-    height: 20px;
-    width: 0%;
-    background: red;
-    transition: 0.5s;
-}
+select, input { padding:5px; }
 </style>
 </head>
 
 <body>
 
-<h1>AI-Based Teaching Feedback System</h1>
+<h1>Smart Teaching Feedback Analyzer</h1>
 
-<p>
-This website helps in analyzing teaching effectiveness using student feedback.
-It calculates results, shows graphs, and provides improvement suggestions.
-</p>
+<p>This system analyzes teaching effectiveness based on multiple parameters.</p>
 
 <hr>
 
-<h2>Give Feedback</h2>
+<h2>Enter Details</h2>
 
+<!-- Ratings -->
 <div class="box">Clarity: <input type="number" id="c1" min="1" max="5"></div>
 <div class="box">Engagement: <input type="number" id="c2" min="1" max="5"></div>
 <div class="box">Communication: <input type="number" id="c3" min="1" max="5"></div>
 <div class="box">Doubt Solving: <input type="number" id="c4" min="1" max="5"></div>
 
-<br>
-
-<button onclick="calculate()">Check Result</button>
-
-<h3 id="result"></h3>
-<p id="suggestion"></p>
-
-<h3>Graphical Representation</h3>
-<canvas id="myChart" width="300" height="200"></canvas>
-
-<h3 id="statusBox"></h3>
-
-<div style="width:300px; margin:auto; background:#ddd;">
-    <div id="bar"></div>
+<!-- New Parameters -->
+<div class="box">
+Teaching Method:
+<select id="method">
+<option>Lecture</option>
+<option>Interactive</option>
+<option>Practical</option>
+</select>
 </div>
 
+<div class="box">
+Class Size:
+<select id="size">
+<option>Small</option>
+<option>Medium</option>
+<option>Large</option>
+</select>
+</div>
+
+<div class="box">
+Student Level:
+<select id="level">
+<option>Beginner</option>
+<option>Average</option>
+<option>Advanced</option>
+</select>
+</div>
+
+<br>
+
+<button onclick="analyze()">Analyze Teaching</button>
+
+<h2 id="result"></h2>
+<p id="analysis"></p>
+
 <script>
-function calculate(){
+function analyze(){
 
-let clarity = Number(document.getElementById("c1").value);
-let engagement = Number(document.getElementById("c2").value);
-let communication = Number(document.getElementById("c3").value);
-let doubt = Number(document.getElementById("c4").value);
+let c1 = Number(document.getElementById("c1").value);
+let c2 = Number(document.getElementById("c2").value);
+let c3 = Number(document.getElementById("c3").value);
+let c4 = Number(document.getElementById("c4").value);
 
-let avg = (clarity + engagement + communication + doubt) / 4;
+let method = document.getElementById("method").value;
+let size = document.getElementById("size").value;
+let level = document.getElementById("level").value;
+
+let avg = (c1+c2+c3+c4)/4;
 
 // RESULT
 let result = "";
-if(avg <= 2) result = "Poor";
-else if(avg <= 3) result = "Average";
-else if(avg <= 4) result = "Good";
-else result = "Excellent";
+if(avg <=2) result="Poor";
+else if(avg<=3) result="Average";
+else if(avg<=4) result="Good";
+else result="Excellent";
 
-// SUGGESTIONS
-let suggestion = "<b>Improvement Suggestions:</b><br>";
+// SMART ANALYSIS
+let analysis = "";
 
-if(clarity < 3){
-    suggestion += "- Use simpler explanations<br>";
-}
-if(engagement < 3){
-    suggestion += "- Increase interaction<br>";
-}
-if(communication < 3){
-    suggestion += "- Improve communication<br>";
-}
-if(doubt < 3){
-    suggestion += "- Give more time for doubts<br>";
+// based on ratings
+if(c1<3) analysis += "Improve clarity with simple examples.<br>";
+if(c2<3) analysis += "Increase student interaction.<br>";
+if(c3<3) analysis += "Work on communication skills.<br>";
+if(c4<3) analysis += "Focus more on doubt solving.<br>";
+
+// based on method
+if(method=="Lecture" && c2<3){
+analysis += "Switch to interactive teaching method.<br>";
 }
 
-if(suggestion === "<b>Improvement Suggestions:</b><br>"){
-    suggestion += "No major improvement needed";
+if(method=="Practical" && c1<3){
+analysis += "Explain concepts before practical sessions.<br>";
 }
 
-// DISPLAY RESULT
+// based on class size
+if(size=="Large" && c2<3){
+analysis += "Use group activities for large class.<br>";
+}
+
+// based on student level
+if(level=="Beginner" && c1<3){
+analysis += "Use very basic explanations for beginners.<br>";
+}
+
+if(analysis==""){
+analysis="Teaching strategy is effective.";
+}
+
+// DISPLAY
 document.getElementById("result").innerHTML =
-"Result: " + result + " (Avg: " + avg.toFixed(2) + ")";
+"Overall Performance: " + result;
 
-document.getElementById("suggestion").innerHTML = suggestion;
-
-// GRAPH
-if(window.chart){
-    window.chart.destroy();
-}
-
-let ctx = document.getElementById("myChart").getContext("2d");
-
-window.chart = new Chart(ctx, {
-    type: "bar",
-    data: {
-        labels: ["Clarity","Engagement","Communication","Doubt"],
-        datasets: [{
-            label: "Ratings",
-            data: [clarity, engagement, communication, doubt]
-        }]
-    },
-    options: {
-        scales: {
-            y: {
-                beginAtZero: true,
-                max: 5
-            }
-        }
-    }
-});
-
-// STATUS BOX
-document.getElementById("statusBox").innerHTML =
-"Teaching Effectiveness: " + result;
-
-// PERFORMANCE BAR
-let percent = (avg/5) * 100;
-
-let bar = document.getElementById("bar");
-bar.style.width = percent + "%";
-
-if(avg <= 2){
-    bar.style.background = "red";
-}
-else if(avg <= 3){
-    bar.style.background = "orange";
-}
-else{
-    bar.style.background = "green";
-}
+document.getElementById("analysis").innerHTML = analysis;
 
 }
 </script>
