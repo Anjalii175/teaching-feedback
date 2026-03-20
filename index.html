@@ -6,17 +6,17 @@
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <style>
     body { font-family: Arial; margin: 20px; background:#f4f4f4; }
-    h2 { color:#333; }
+    h1 { text-align:center; }
     .container { display:flex; gap:20px; }
-    .panel { background:white; padding:20px; border-radius:10px; width:50%; }
+    .panel { background:white; padding:20px; border-radius:10px; width:50%; box-shadow:0 0 10px rgba(0,0,0,0.1);} 
     input, select, textarea, button { width:100%; margin:8px 0; padding:8px; }
-    button { background:#4CAF50; color:white; border:none; cursor:pointer; }
+    button { background:#ff7a59; color:white; border:none; cursor:pointer; border-radius:6px; }
     canvas { margin-top:20px; }
   </style>
 </head>
 <body>
 
-<h1>📚 Feedback Learning System</h1>
+<h1>📚 Smart Feedback Learning System</h1>
 
 <div class="container">
 
@@ -27,11 +27,9 @@
     <input type="text" id="topic" placeholder="Topic Name">
     <input type="text" id="duration" placeholder="Duration of Class">
 
-    <textarea id="manualData" placeholder="Enter student scores (comma separated e.g. 60,70,80)"></textarea>
+    <textarea id="manualData" placeholder="Enter student scores (e.g. 60,70,80)"></textarea>
 
-    <input type="file" id="csvFile" accept=".csv">
-
-    <button onclick="processData()">Generate Summary</button>
+    <button onclick="processData()">Generate Analysis</button>
 
     <canvas id="chart"></canvas>
 
@@ -42,25 +40,11 @@
   <div class="panel">
     <h2>👨‍🎓 Student Panel</h2>
 
-    <input type="text" placeholder="Select Topic/Class">
+    <input type="text" placeholder="Enter Topic/Class">
 
-    <label>Did you understand the topic?</label>
-    <select id="understand">
-      <option>Yes</option>
-      <option>No</option>
-    </select>
+    <p>Click below to fill feedback form:</p>
 
-    <label>Where did you face difficulty?</label>
-    <textarea id="difficulty"></textarea>
-
-    <label>Teaching speed</label>
-    <select id="speed">
-      <option>Slow</option>
-      <option>Perfect</option>
-      <option>Fast</option>
-    </select>
-
-    <button onclick="submitFeedback()">Submit Feedback</button>
+    <button onclick="openForm()">Fill Feedback Form</button>
 
     <p id="response"></p>
   </div>
@@ -72,19 +56,10 @@ let scores = [];
 
 function processData() {
   let manual = document.getElementById("manualData").value;
-  let file = document.getElementById("csvFile").files[0];
 
   if (manual) {
     scores = manual.split(",").map(Number);
     drawChart();
-  } else if (file) {
-    let reader = new FileReader();
-    reader.onload = function(e) {
-      let text = e.target.result;
-      scores = text.split(/\r?\n/).map(Number);
-      drawChart();
-    };
-    reader.readAsText(file);
   }
 }
 
@@ -102,18 +77,12 @@ function drawChart() {
     }
   });
 
-  let suggestion = avg < 50 ? "⚠️ Students need re-teaching of topic" : "✅ Good understanding";
+  let suggestion = avg < 50 ? "⚠️ Students need re-teaching" : "✅ Students understood well";
   document.getElementById("suggestion").innerText = "Average: " + avg.toFixed(2) + "% | " + suggestion;
 }
 
-function submitFeedback() {
-  let u = document.getElementById("understand").value;
-  let d = document.getElementById("difficulty").value;
-  let s = document.getElementById("speed").value;
-
-  document.getElementById("response").innerText = "Feedback Submitted ✅";
-
-  console.log({understanding:u, difficulty:d, speed:s});
+function openForm() {
+  window.open("https://forms.gle/YOUR_GOOGLE_FORM_LINK");
 }
 </script>
 
