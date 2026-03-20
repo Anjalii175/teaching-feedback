@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>Smart Teaching System</title>
+<title>Smart Teaching Improvement System</title>
 </head>
 
 <body style="text-align:center; font-family:Arial;">
@@ -30,7 +30,7 @@ let c = Number(document.getElementById("c3").value);
 let d = Number(document.getElementById("c4").value);
 
 if(!a || !b || !c || !d){
-alert("Fill all values");
+alert("Please fill all values");
 return;
 }
 
@@ -41,14 +41,14 @@ return;
 
 let avg = (a+b+c+d)/4;
 
-// RESULT
+// Result
 let result="";
 if(avg<=2) result="Poor";
 else if(avg<=3) result="Average";
 else if(avg<=4) result="Good";
 else result="Excellent";
 
-// WEAKEST AREA
+// Weakest Area
 let min = Math.min(a,b,c,d);
 let weak = "";
 let solution = "";
@@ -70,7 +70,7 @@ weak = "Doubt Solving";
 solution = "Give more time to students and solve doubts properly";
 }
 
-// OUTPUT
+// Output
 document.getElementById("result").innerHTML =
 "Result: "+result+" (Average "+avg.toFixed(2)+")";
 
