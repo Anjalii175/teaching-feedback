@@ -9,47 +9,58 @@
 body {
     font-family: Arial;
     margin: 0;
-    background: linear-gradient(to right, #667eea, #764ba2);
+    background: linear-gradient(135deg, #667eea, #764ba2);
     color: white;
     text-align: center;
 }
 
+/* NAVBAR */
 .nav {
     padding: 15px;
-    background: rgba(0,0,0,0.3);
 }
 
 .nav button {
-    margin: 5px;
     padding: 10px 20px;
+    margin: 5px;
     border: none;
+    border-radius: 20px;
     background: white;
     color: black;
-    border-radius: 5px;
     cursor: pointer;
+    font-weight: bold;
 }
 
-.section { display: none; padding: 30px; }
-.active { display: block; }
+/* SECTION */
+.section {
+    display: none;
+    padding: 30px;
+}
 
+.active {
+    display: block;
+}
+
+/* CARD UI */
 .card {
     background: white;
     color: black;
     padding: 20px;
     margin: auto;
-    width: 320px;
-    border-radius: 10px;
+    width: 300px;
+    border-radius: 15px;
+    box-shadow: 0px 5px 15px rgba(0,0,0,0.3);
 }
 
 input {
-    margin: 5px;
     padding: 5px;
+    margin: 5px;
     width: 60px;
 }
 
-button.main {
+.main-btn {
     background: #667eea;
     color: white;
+    border-radius: 10px;
 }
 </style>
 </head>
@@ -57,43 +68,48 @@ button.main {
 <body>
 
 <div class="nav">
-<button onclick="show('p1')">Individual</button>
-<button onclick="show('p2')">Class Analysis</button>
+<button onclick="showPage('p1')">👤 Individual</button>
+<button onclick="showPage('p2')">📊 Class Analysis</button>
 </div>
 
-<!-- 🔹 PAGE 1 -->
+<!-- PAGE 1 -->
 <div id="p1" class="section active">
 
-<h1>AI-Based Teaching Feedback System</h1>
-<p>Analyze teaching effectiveness using student feedback</p>
+<h1>Teaching Feedback System</h1>
 
 <div class="card">
-Clarity <br><input id="c1"><br>
-Engagement <br><input id="c2"><br>
-Communication <br><input id="c3"><br>
-Doubt Solving <br><input id="c4"><br>
 
-<button class="main" onclick="calc()">Analyze</button>
+Clarity <br><input id="c1" type="number"><br>
+Engagement <br><input id="c2" type="number"><br>
+Communication <br><input id="c3" type="number"><br>
+Doubt Solving <br><input id="c4" type="number"><br>
 
-<h3 id="r1"></h3>
-<p id="s1"></p>
+<br>
+<button class="main-btn" onclick="analyzeIndividual()">Analyze</button>
+
+<h3 id="result1"></h3>
+<p id="suggestion1"></p>
+
 </div>
 
 </div>
 
-<!-- 🔹 PAGE 2 -->
+<!-- PAGE 2 -->
 <div id="p2" class="section">
 
 <h1>Class Data Analysis</h1>
 
 <div class="card">
 
-<input type="file" id="file"><br><br>
-<button class="main" onclick="process()">Upload & Analyze</button>
+<input type="file" id="fileInput"><br><br>
 
-<h3 id="r2"></h3>
-<canvas id="chart"></canvas>
-<p id="s2"></p>
+<button class="main-btn" onclick="analyzeCSV()">Upload & Analyze</button>
+
+<h3 id="result2"></h3>
+
+<canvas id="chart" width="300" height="200"></canvas>
+
+<p id="suggestion2"></p>
 
 </div>
 
@@ -101,30 +117,35 @@ Doubt Solving <br><input id="c4"><br>
 
 <script>
 
-// page switch
-function show(id){
+// PAGE SWITCH
+function showPage(page){
 document.getElementById("p1").classList.remove("active");
 document.getElementById("p2").classList.remove("active");
-document.getElementById(id).classList.add("active");
+document.getElementById(page).classList.add("active");
 }
 
-// individual
-function calc(){
+// INDIVIDUAL ANALYSIS
+function analyzeIndividual(){
 
-let a=Number(c1.value);
-let b=Number(c2.value);
-let c=Number(c3.value);
-let d=Number(c4.value);
+let a = Number(document.getElementById("c1").value);
+let b = Number(document.getElementById("c2").value);
+let c = Number(document.getElementById("c3").value);
+let d = Number(document.getElementById("c4").value);
 
-let avg=(a+b+c+d)/4;
+if(!a || !b || !c || !d){
+alert("Please fill all fields");
+return;
+}
 
-let res="";
+let avg = (a+b+c+d)/4;
+
+let res = "";
 if(avg<=2) res="Poor";
 else if(avg<=3) res="Average";
 else if(avg<=4) res="Good";
 else res="Excellent";
 
-let sug="";
+let sug = "";
 
 if(a<3) sug+="Improve clarity<br>";
 if(b<3) sug+="Increase engagement<br>";
@@ -133,45 +154,48 @@ if(d<3) sug+="Focus on doubts<br>";
 
 if(sug=="") sug="Great teaching performance";
 
-r1.innerHTML="Result: "+res+" (Avg "+avg.toFixed(2)+")";
-s1.innerHTML=sug;
+document.getElementById("result1").innerHTML =
+"Result: "+res+" (Avg: "+avg.toFixed(2)+")";
+
+document.getElementById("suggestion1").innerHTML = sug;
 
 }
 
-// CSV analysis
-function process(){
+// CSV ANALYSIS
+function analyzeCSV(){
 
-let file=document.getElementById("file").files[0];
+let file = document.getElementById("fileInput").files[0];
 
 if(!file){
 alert("Upload CSV file");
 return;
 }
 
-let reader=new FileReader();
+let reader = new FileReader();
 
-reader.onload=function(e){
+reader.onload = function(e){
 
-let rows=e.target.result.split("\n");
+let rows = e.target.result.split("\n");
 
-let sum=0,count=0;
+let sum = 0;
+let count = 0;
 
 for(let i=1;i<rows.length;i++){
 
-let cols=rows[i].split(",");
+let cols = rows[i].split(",");
 
 for(let j=0;j<cols.length;j++){
 
-let val=Number(cols[j]);
+let val = Number(cols[j]);
 
 if(!isNaN(val) && val>0){
-sum+=val;
+sum += val;
 count++;
 }
 }
 }
 
-let avg=sum/count;
+let avg = sum/count;
 
 let res="";
 if(avg<=2) res="Poor";
@@ -179,33 +203,40 @@ else if(avg<=3) res="Average";
 else if(avg<=4) res="Good";
 else res="Excellent";
 
-r2.innerHTML="Class Avg: "+avg.toFixed(2)+" ("+res+")";
+document.getElementById("result2").innerHTML =
+"Class Average: "+avg.toFixed(2)+" ("+res+")";
 
-// graph
-if(window.chart) window.chart.destroy();
+// GRAPH FIX
+let ctx = document.getElementById("chart").getContext("2d");
 
-let ctx=document.getElementById("chart").getContext("2d");
+if(window.chart){
+window.chart.destroy();
+}
 
-window.chart=new Chart(ctx,{
+window.chart = new Chart(ctx,{
 type:"bar",
 data:{
 labels:["Average"],
-datasets:[{label:"Score",data:[avg]}]
+datasets:[{
+label:"Score",
+data:[avg]
+}]
 }
 });
 
-// improvement
+// suggestion
 let sug="";
 if(avg<3) sug="Teaching needs improvement";
 else sug="Teaching performance is good";
 
-s2.innerHTML=sug;
+document.getElementById("suggestion2").innerHTML = sug;
 
 };
 
 reader.readAsText(file);
 
 }
+
 </script>
 
 </body>
