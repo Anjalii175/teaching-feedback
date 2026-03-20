@@ -9,58 +9,62 @@
 body {
     font-family: Arial;
     margin: 0;
-    background: linear-gradient(135deg, #667eea, #764ba2);
+    background: linear-gradient(135deg,#667eea,#764ba2);
     color: white;
     text-align: center;
 }
 
-/* NAVBAR */
+/* NAV */
 .nav {
     padding: 15px;
 }
-
 .nav button {
     padding: 10px 20px;
     margin: 5px;
     border: none;
     border-radius: 20px;
     background: white;
-    color: black;
     cursor: pointer;
-    font-weight: bold;
 }
 
 /* SECTION */
-.section {
-    display: none;
-    padding: 30px;
-}
+.section { display:none; padding:30px; }
+.active { display:block; }
 
-.active {
-    display: block;
-}
-
-/* CARD UI */
+/* CARD */
 .card {
-    background: white;
-    color: black;
-    padding: 20px;
-    margin: auto;
-    width: 300px;
-    border-radius: 15px;
-    box-shadow: 0px 5px 15px rgba(0,0,0,0.3);
+    background:white;
+    color:black;
+    padding:20px;
+    margin:auto;
+    width:320px;
+    border-radius:15px;
+    box-shadow:0 5px 15px rgba(0,0,0,0.3);
 }
 
+/* INPUT */
 input {
-    padding: 5px;
-    margin: 5px;
-    width: 60px;
+    padding:5px;
+    margin:5px;
+    width:60px;
 }
 
+/* BUTTON */
 .main-btn {
-    background: #667eea;
-    color: white;
-    border-radius: 10px;
+    background:#667eea;
+    color:white;
+    border:none;
+    padding:10px;
+    border-radius:10px;
+}
+
+/* ANIMATION */
+.fade {
+    animation:fade 0.5s ease-in-out;
+}
+@keyframes fade {
+from{opacity:0;}
+to{opacity:1;}
 }
 </style>
 </head>
@@ -73,19 +77,20 @@ input {
 </div>
 
 <!-- PAGE 1 -->
-<div id="p1" class="section active">
+<div id="p1" class="section active fade">
 
-<h1>Teaching Feedback System</h1>
+<h1>📘 Teaching Feedback System</h1>
+<p>Analyze teaching effectiveness using student feedback</p>
 
 <div class="card">
 
-Clarity <br><input id="c1" type="number"><br>
-Engagement <br><input id="c2" type="number"><br>
-Communication <br><input id="c3" type="number"><br>
-Doubt Solving <br><input id="c4" type="number"><br>
+Clarity <br><input id="c1" type="number" min="1" max="5"><br>
+Engagement <br><input id="c2" type="number" min="1" max="5"><br>
+Communication <br><input id="c3" type="number" min="1" max="5"><br>
+Doubt Solving <br><input id="c4" type="number" min="1" max="5"><br>
 
 <br>
-<button class="main-btn" onclick="analyzeIndividual()">Analyze</button>
+<button class="main-btn" onclick="analyzeIndividual()">Analyze 🚀</button>
 
 <h3 id="result1"></h3>
 <p id="suggestion1"></p>
@@ -95,19 +100,18 @@ Doubt Solving <br><input id="c4" type="number"><br>
 </div>
 
 <!-- PAGE 2 -->
-<div id="p2" class="section">
+<div id="p2" class="section fade">
 
-<h1>Class Data Analysis</h1>
+<h1>📊 Class Data Analysis</h1>
 
 <div class="card">
 
 <input type="file" id="fileInput"><br><br>
-
-<button class="main-btn" onclick="analyzeCSV()">Upload & Analyze</button>
+<button class="main-btn" onclick="analyzeCSV()">Upload & Analyze 📈</button>
 
 <h3 id="result2"></h3>
 
-<canvas id="chart" width="300" height="200"></canvas>
+<canvas id="chart"></canvas>
 
 <p id="suggestion2"></p>
 
@@ -124,78 +128,25 @@ document.getElementById("p2").classList.remove("active");
 document.getElementById(page).classList.add("active");
 }
 
-// INDIVIDUAL ANALYSIS
+// INDIVIDUAL
 function analyzeIndividual(){
 
-let a = Number(document.getElementById("c1").value);
-let b = Number(document.getElementById("c2").value);
-let c = Number(document.getElementById("c3").value);
-let d = Number(document.getElementById("c4").value);
+let a=Number(document.getElementById("c1").value);
+let b=Number(document.getElementById("c2").value);
+let c=Number(document.getElementById("c3").value);
+let d=Number(document.getElementById("c4").value);
 
 if(!a || !b || !c || !d){
-alert("Please fill all fields");
+alert("Fill all fields");
 return;
 }
 
-let avg = (a+b+c+d)/4;
-
-let res = "";
-if(avg<=2) res="Poor";
-else if(avg<=3) res="Average";
-else if(avg<=4) res="Good";
-else res="Excellent";
-
-let sug = "";
-
-if(a<3) sug+="Improve clarity<br>";
-if(b<3) sug+="Increase engagement<br>";
-if(c<3) sug+="Better communication<br>";
-if(d<3) sug+="Focus on doubts<br>";
-
-if(sug=="") sug="Great teaching performance";
-
-document.getElementById("result1").innerHTML =
-"Result: "+res+" (Avg: "+avg.toFixed(2)+")";
-
-document.getElementById("suggestion1").innerHTML = sug;
-
-}
-
-// CSV ANALYSIS
-function analyzeCSV(){
-
-let file = document.getElementById("fileInput").files[0];
-
-if(!file){
-alert("Upload CSV file");
+if(a<1||a>5||b<1||b>5||c<1||c>5||d<1||d>5){
+alert("Enter values between 1 to 5");
 return;
 }
 
-let reader = new FileReader();
-
-reader.onload = function(e){
-
-let rows = e.target.result.split("\n");
-
-let sum = 0;
-let count = 0;
-
-for(let i=1;i<rows.length;i++){
-
-let cols = rows[i].split(",");
-
-for(let j=0;j<cols.length;j++){
-
-let val = Number(cols[j]);
-
-if(!isNaN(val) && val>0){
-sum += val;
-count++;
-}
-}
-}
-
-let avg = sum/count;
+let avg=(a+b+c+d)/4;
 
 let res="";
 if(avg<=2) res="Poor";
@@ -203,20 +154,72 @@ else if(avg<=3) res="Average";
 else if(avg<=4) res="Good";
 else res="Excellent";
 
-document.getElementById("result2").innerHTML =
-"Class Average: "+avg.toFixed(2)+" ("+res+")";
+// IMPROVEMENT
+let sug="";
 
-// GRAPH FIX
-let ctx = document.getElementById("chart").getContext("2d");
+if(a<3) sug+="👉 Improve clarity using simple examples<br>";
+if(b<3) sug+="👉 Increase student interaction<br>";
+if(c<3) sug+="👉 Work on communication skills<br>";
+if(d<3) sug+="👉 Spend more time on doubts<br>";
+
+if(sug=="") sug="✅ Excellent teaching. Keep it up!";
+
+document.getElementById("result1").innerHTML=
+"Result: "+res+" (Avg: "+avg.toFixed(2)+")";
+
+document.getElementById("suggestion1").innerHTML=sug;
+
+}
+
+// CSV ANALYSIS
+function analyzeCSV(){
+
+let file=document.getElementById("fileInput").files[0];
+
+if(!file){
+alert("Upload CSV file");
+return;
+}
+
+let reader=new FileReader();
+
+reader.onload=function(e){
+
+let rows=e.target.result.split("\n");
+
+let sum=0,count=0;
+
+for(let i=1;i<rows.length;i++){
+
+let cols=rows[i].split(",");
+
+for(let j=0;j<cols.length;j++){
+
+let val=Number(cols[j]);
+
+if(!isNaN(val)&&val>0){
+sum+=val;
+count++;
+}
+}
+}
+
+let avg=sum/count;
+
+document.getElementById("result2").innerHTML=
+"Class Average: "+avg.toFixed(2);
+
+// GRAPH
+let ctx=document.getElementById("chart").getContext("2d");
 
 if(window.chart){
 window.chart.destroy();
 }
 
-window.chart = new Chart(ctx,{
+window.chart=new Chart(ctx,{
 type:"bar",
 data:{
-labels:["Average"],
+labels:["Class Avg"],
 datasets:[{
 label:"Score",
 data:[avg]
@@ -224,12 +227,23 @@ data:[avg]
 }
 });
 
-// suggestion
+// IMPROVEMENT LOGIC
 let sug="";
-if(avg<3) sug="Teaching needs improvement";
-else sug="Teaching performance is good";
 
-document.getElementById("suggestion2").innerHTML = sug;
+if(avg<=2){
+sug="🔴 Poor: Improve clarity, communication & basic teaching methods.";
+}
+else if(avg<=3){
+sug="🟠 Average: Increase engagement and interaction.";
+}
+else if(avg<=4){
+sug="🟢 Good: Add real-life examples & interactive teaching.";
+}
+else{
+sug="🟢 Excellent: Maintain consistency and innovation.";
+}
+
+document.getElementById("suggestion2").innerHTML=sug;
 
 };
 
