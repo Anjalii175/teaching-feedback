@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>Teaching Feedback System</title>
+<title>Smart Teaching Improvement System</title>
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
@@ -79,8 +79,8 @@ to{opacity:1;}
 <!-- PAGE 1 -->
 <div id="p1" class="section active fade">
 
-<h1>📘 Teaching Feedback System</h1>
-<p>Analyze teaching effectiveness using student feedback</p>
+<h1>📘 Smart Teaching Improvement System</h1>
+<p>This system identifies teaching weaknesses and suggests improvement strategies.</p>
 
 <div class="card">
 
@@ -128,7 +128,7 @@ document.getElementById("p2").classList.remove("active");
 document.getElementById(page).classList.add("active");
 }
 
-// INDIVIDUAL
+// INDIVIDUAL ANALYSIS (SMART SYSTEM)
 function analyzeIndividual(){
 
 let a=Number(document.getElementById("c1").value);
@@ -154,15 +154,40 @@ else if(avg<=3) res="Average";
 else if(avg<=4) res="Good";
 else res="Excellent";
 
-// IMPROVEMENT
-let sug="";
+// 🔥 SMART IMPROVEMENT ENGINE
+let sug="<b>Improvement Plan:</b><br><br>";
 
-if(a<3) sug+="👉 Improve clarity using simple examples<br>";
-if(b<3) sug+="👉 Increase student interaction<br>";
-if(c<3) sug+="👉 Work on communication skills<br>";
-if(d<3) sug+="👉 Spend more time on doubts<br>";
+if(a<3){
+sug+="🔹 Clarity Low:<br>";
+sug+="- Use simple language<br>";
+sug+="- Add real-life examples<br>";
+sug+="- Use diagrams/visuals<br><br>";
+}
 
-if(sug=="") sug="✅ Excellent teaching. Keep it up!";
+if(b<3){
+sug+="🔹 Engagement Low:<br>";
+sug+="- Ask questions in class<br>";
+sug+="- Encourage participation<br>";
+sug+="- Use interactive activities<br><br>";
+}
+
+if(c<3){
+sug+="🔹 Communication Issue:<br>";
+sug+="- Speak clearly and slowly<br>";
+sug+="- Maintain eye contact<br>";
+sug+="- Use proper tone<br><br>";
+}
+
+if(d<3){
+sug+="🔹 Doubt Solving Weak:<br>";
+sug+="- Allocate time for questions<br>";
+sug+="- Encourage doubt asking<br>";
+sug+="- Give additional support<br><br>";
+}
+
+if(sug=="<b>Improvement Plan:</b><br><br>"){
+sug="✅ Excellent teaching. No major improvements needed.";
+}
 
 document.getElementById("result1").innerHTML=
 "Result: "+res+" (Avg: "+avg.toFixed(2)+")";
@@ -227,20 +252,20 @@ data:[avg]
 }
 });
 
-// IMPROVEMENT LOGIC
+// 🔥 CLASS IMPROVEMENT ENGINE
 let sug="";
 
 if(avg<=2){
-sug="🔴 Poor: Improve clarity, communication & basic teaching methods.";
+sug="🔴 Major improvement needed: Focus on basic teaching clarity, communication and student understanding.";
 }
 else if(avg<=3){
-sug="🟠 Average: Increase engagement and interaction.";
+sug="🟠 Improve engagement and interaction techniques in class.";
 }
 else if(avg<=4){
-sug="🟢 Good: Add real-life examples & interactive teaching.";
+sug="🟢 Teaching is good, but can improve with interactive methods and real-life examples.";
 }
 else{
-sug="🟢 Excellent: Maintain consistency and innovation.";
+sug="🟢 Excellent performance. Maintain consistency and innovation.";
 }
 
 document.getElementById("suggestion2").innerHTML=sug;
