@@ -6,24 +6,24 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <style>
-body {
+body{
   font-family: Arial;
-  background: linear-gradient(to right, #dfe9f3, #eef2f3);
-  padding: 30px;
+  background: #dfe9f3;
   text-align: center;
+  padding: 30px;
 }
 
-.card {
+.card{
   background: white;
   padding: 20px;
-  border-radius: 12px;
+  border-radius: 10px;
   max-width: 500px;
   margin: auto;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
 }
 
-button {
-  padding: 10px;
+button{
+  padding: 12px;
   margin: 10px;
   border: none;
   border-radius: 6px;
@@ -32,42 +32,37 @@ button {
   cursor: pointer;
 }
 
-input {
+input{
   padding: 10px;
   width: 80%;
-  margin-top: 10px;
-  border-radius: 6px;
-  border: 1px solid #ccc;
+  margin: 10px;
 }
 </style>
-
 </head>
+
 <body>
 
 <h1>👩‍🏫 Teacher Dashboard</h1>
 
 <div class="card">
 
-<!-- Spreadsheet -->
-<h3>📊 View Student Responses</h3>
-<button onclick="window.open('https://docs.google.com/spreadsheets/d/1oelarAPB7g7YQSQcUOKlyFsYXB5FtnCbgH0QC0qdoLE/edit?usp=sharing')">
-Open Responses Sheet
+<p><b>AI Feature:</b> Generate topic-based MCQs using AI</p>
+
+<h3>📊 View Responses</h3>
+<button onclick="window.open('PASTE_YOUR_SPREADSHEET_LINK_HERE')">
+Open Sheet
 </button>
 
-<!-- AI Question Generator -->
-<h3>🤖 Generate AI-Based Quiz</h3>
+<h3>🤖 Generate AI Questions</h3>
 
-<input type="text" id="topic" placeholder="Enter topic (e.g. Tree Topology)">
+<input type="text" id="topic" placeholder="Enter topic">
 
 <br>
 
-<button onclick="generateAI()">
-Generate Questions
-</button>
+<button onclick="generateAI()">Generate Questions</button>
 
 <p id="note"></p>
 
-<!-- Graph -->
 <h3>📈 Performance Overview</h3>
 <canvas id="chart"></canvas>
 
@@ -77,43 +72,36 @@ Generate Questions
 
 <script>
 
-// AI Generator
 function generateAI(){
   let topic = document.getElementById("topic").value;
 
   if(topic === ""){
-    alert("Please enter topic!");
+    alert("Enter topic!");
     return;
   }
 
   let url = `https://chat.openai.com/?q=Give 5 MCQs on ${topic} with answers`;
-
   window.open(url);
 
   document.getElementById("note").innerText =
-  "👉 Copy questions from AI and paste into Google Form";
+  "👉 Copy questions from AI and add them to Google Form";
 }
 
+// demo graph
+let scores = [3,4,2,5,3];
 
-// Demo Graph Data
-let scores = [3, 4, 2, 5, 3];
-
-new Chart(document.getElementById("chart"), {
-  type: 'bar',
-  data: {
-    labels: ["Student 1", "Student 2", "Student 3", "Student 4", "Student 5"],
-    datasets: [{
-      label: 'Scores',
-      data: scores
-    }]
-  }
+new Chart(document.getElementById("chart"),{
+ type:'bar',
+ data:{
+  labels:["S1","S2","S3","S4","S5"],
+  datasets:[{label:'Scores',data:scores}]
+ }
 });
 
-// Analysis
-let weak = (scores.filter(s => s < 3).length / scores.length) * 100;
+let weak = (scores.filter(s=>s<3).length / scores.length)*100;
 
 document.getElementById("insight").innerText =
-  weak.toFixed(0) + "% students need improvement";
+weak.toFixed(0) + "% students need improvement";
 
 </script>
 
