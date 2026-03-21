@@ -16,13 +16,13 @@ body{
   background: white;
   padding: 20px;
   border-radius: 10px;
-  max-width: 400px;
+  max-width: 500px;
   margin: auto;
   box-shadow: 0 4px 10px rgba(0,0,0,0.1);
 }
 
 button{
-  padding: 12px;
+  padding: 10px;
   margin: 10px;
   border: none;
   border-radius: 6px;
@@ -32,24 +32,23 @@ button{
   width: 80%;
 }
 
-h1{
-  margin-bottom: 20px;
+#studentQuiz{
+  text-align: left;
+  margin-top: 15px;
 }
 </style>
 </head>
 
 <body>
 
-<h1>📚 Smart Learning System</h1>
+<h1>📚 Student Panel</h1>
 
 <div class="card">
 
-<p>🤖 AI-generated quizzes help you test your understanding</p>
+<p>🤖 AI Generated Quiz</p>
 
-<h3>🧠 Attempt Quiz</h3>
-<button onclick="window.open('PASTE_YOUR_QUIZ_LINK_HERE')">
-Start Quiz
-</button>
+<h3>📋 Quiz</h3>
+<div id="studentQuiz">Loading...</div>
 
 <h3>💬 Give Feedback</h3>
 <button onclick="window.open('https://forms.gle/fzY3YDtUxTrUS5Co6')">
@@ -57,6 +56,18 @@ Fill Feedback
 </button>
 
 </div>
+
+<script>
+window.onload = function(){
+  let quiz = localStorage.getItem("quiz");
+
+  if(quiz){
+    document.getElementById("studentQuiz").innerText = quiz;
+  } else {
+    document.getElementById("studentQuiz").innerText = "No quiz available yet. Please wait for teacher.";
+  }
+}
+</script>
 
 </body>
 </html>
