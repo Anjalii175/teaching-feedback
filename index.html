@@ -2,18 +2,31 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Smart AI Teaching System</title>
+<title>Smart Teaching System</title>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <style>
 body {
-  font-family: Arial, sans-serif;
+  font-family: Arial;
   background: linear-gradient(to right, #eef2f3, #dfe9f3);
   margin: 0;
   padding: 20px;
 }
 
-h1 {
+h1 { text-align: center; }
+
+.topbar {
   text-align: center;
+  margin-bottom: 20px;
+}
+
+button {
+  padding: 10px;
+  border: none;
+  border-radius: 6px;
+  background: #5a67d8;
+  color: white;
+  cursor: pointer;
+  margin: 5px;
 }
 
 .container {
@@ -29,27 +42,15 @@ h1 {
   box-shadow: 0 4px 12px rgba(0,0,0,0.1);
 }
 
-input, textarea, button {
+input {
   width: 100%;
-  margin: 8px 0;
   padding: 10px;
+  margin: 8px 0;
   border-radius: 6px;
   border: 1px solid #ccc;
 }
 
-button {
-  background: #5a67d8;
-  color: white;
-  border: none;
-  cursor: pointer;
-}
-
-button:hover {
-  background: #434190;
-}
-
 .result {
-  margin-top: 10px;
   font-weight: bold;
 }
 </style>
@@ -59,24 +60,27 @@ button:hover {
 
 <h1>📚 Smart AI Teaching & Feedback System</h1>
 
+<div class="topbar">
+  <button onclick="showTeacher()">Login as Teacher</button>
+</div>
+
 <div class="container">
 
 <!-- Teacher Panel -->
-<div class="card">
+<div class="card" id="teacherPanel" style="display:none;">
 <h2>👩‍🏫 Teacher Panel</h2>
 
-<input type="text" id="topic" placeholder="Enter Topic (e.g. Linear Regression)">
+<input type="text" id="topic" placeholder="Enter Topic">
 <button onclick="generateQuestions()">Generate Questions</button>
 
-<h3>📊 Student Performance</h3>
+<h3>📊 Performance</h3>
 <canvas id="chart"></canvas>
 <p id="teacherInsight"></p>
 
 <h3>📝 View Feedback</h3>
 <button onclick="window.open('https://docs.google.com/spreadsheets/d/182Gk-lOParvF65dYH_ZPEDnm7aNXczHE4JO5JsOrc1U')">
-View Feedback Responses
+View Feedback
 </button>
-
 </div>
 
 <!-- Student Panel -->
@@ -89,31 +93,39 @@ View Feedback Responses
 <p class="result" id="score"></p>
 <p class="result" id="analysis"></p>
 
-<h3>💬 Give Feedback</h3>
+<h3>💬 Feedback</h3>
 <button onclick="window.open('https://forms.gle/iNEAdfn5iBWnKDNM8')">
 Fill Feedback Form
 </button>
-
 </div>
 
 </div>
 
 <script>
 let questions = [];
-let studentScores = [];
+let scores = [];
 
-function generateQuestions() {
+function showTeacher(){
+  let pass = prompt("Enter Teacher Password");
+  if(pass === "1234"){
+    document.getElementById("teacherPanel").style.display = "block";
+  } else {
+    alert("Wrong Password");
+  }
+}
+
+function generateQuestions(){
   let topic = document.getElementById("topic").value;
 
   questions = [
-    {q: topic + " basic concept?", a: "A"},
-    {q: topic + " formula based?", a: "B"},
-    {q: topic + " real-life use?", a: "C"}
+    {q: topic + " basic concept?", a:"A"},
+    {q: topic + " formula related?", a:"B"},
+    {q: topic + " application?", a:"C"}
   ];
 
   let html = "";
 
-  questions.forEach((item, i) => {
+  questions.forEach((item,i)=>{
     html += `<p>${item.q}</p>
     <input type="radio" name="q${i}" value="A"> A
     <input type="radio" name="q${i}" value="B"> B
@@ -123,22 +135,22 @@ function generateQuestions() {
   document.getElementById("quiz").innerHTML = html;
 }
 
-function submitTest() {
+function submitTest(){
   let score = 0;
 
-  questions.forEach((item, i) => {
+  questions.forEach((item,i)=>{
     let ans = document.querySelector(`input[name=q${i}]:checked`);
-    if (ans && ans.value === item.a) {
+    if(ans && ans.value === item.a){
       score++;
     }
   });
 
-  studentScores.push(score);
+  scores.push(score);
 
   document.getElementById("score").innerText = "Score: " + score;
 
-  if (score < 2) {
-    document.getElementById("analysis").innerText = "⚠️ You need to revise this topic";
+  if(score < 2){
+    document.getElementById("analysis").innerText = "⚠️ Need improvement";
   } else {
     document.getElementById("analysis").innerText = "✅ Good understanding";
   }
@@ -146,24 +158,24 @@ function submitTest() {
   updateChart();
 }
 
-function updateChart() {
-  let avg = studentScores.reduce((a,b)=>a+b,0)/studentScores.length;
+function updateChart(){
+  let avg = scores.reduce((a,b)=>a+b,0)/scores.length;
 
   new Chart(document.getElementById("chart"), {
     type: 'bar',
     data: {
-      labels: studentScores.map((_,i)=>"Student "+(i+1)),
+      labels: scores.map((_,i)=>"Student "+(i+1)),
       datasets: [{
         label: 'Scores',
-        data: studentScores
+        data: scores
       }]
     }
   });
 
-  let weakPercent = (studentScores.filter(s=>s<2).length / studentScores.length)*100;
+  let weak = (scores.filter(s=>s<2).length / scores.length)*100;
 
   document.getElementById("teacherInsight").innerText =
-    weakPercent + "% students are struggling with this topic";
+    weak.toFixed(0) + "% students are weak in this topic";
 }
 </script>
 
