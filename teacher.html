@@ -8,34 +8,34 @@
 <style>
 body{
   font-family: Arial;
-  background: #dfe9f3;
+  background: linear-gradient(to right, #43cea2, #185a9d);
   text-align: center;
   padding: 30px;
+  color: white;
 }
 
 .card{
   background: white;
+  color: black;
   padding: 20px;
-  border-radius: 10px;
+  border-radius: 12px;
   max-width: 500px;
   margin: auto;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+}
+
+input, button{
+  padding: 10px;
+  margin: 10px;
+  width: 80%;
+  border-radius: 6px;
+  border: none;
 }
 
 button{
-  padding: 10px;
-  margin: 10px;
-  border: none;
-  border-radius: 6px;
   background: #5a67d8;
   color: white;
   cursor: pointer;
-}
-
-input, textarea{
-  padding: 10px;
-  width: 80%;
-  margin: 10px;
 }
 </style>
 </head>
@@ -48,30 +48,18 @@ input, textarea{
 
 <h3>📊 View Responses</h3>
 <button onclick="window.open('https://docs.google.com/spreadsheets/d/1oelarAPB7g7YQSQcUOKlyFsYXB5FtnCbgH0QC0qdoLE/edit?usp=sharing')">
-Open Sheet
+Open Responses
 </button>
 
 <h3>🤖 Generate Questions (AI)</h3>
 
 <input type="text" id="topic" placeholder="Enter topic">
 
-<br>
-
 <button onclick="generateAI()">Generate Questions</button>
 
 <p id="note"></p>
 
-<h3>📝 Paste & Save Quiz</h3>
-
-<textarea id="quizData" rows="8" placeholder="Paste AI questions here"></textarea>
-
-<br>
-
-<button onclick="saveQuiz()">Save Quiz</button>
-
-<p id="saveMsg"></p>
-
-<h3>📈 Performance</h3>
+<h3>📈 Class Performance</h3>
 <canvas id="chart"></canvas>
 
 <p id="insight"></p>
@@ -80,7 +68,6 @@ Open Sheet
 
 <script>
 
-// AI open
 function generateAI(){
   let topic = document.getElementById("topic").value;
 
@@ -89,29 +76,14 @@ function generateAI(){
     return;
   }
 
-  let url = `https://chat.openai.com/?q=Give 5 MCQs on ${topic} with answers`;
+  let url = `https://chat.openai.com/?q=Generate 5 MCQs on ${topic} with options and answers`;
   window.open(url);
 
   document.getElementById("note").innerText =
-  "👉 Copy questions from AI and paste below";
+  "👉 Copy questions → paste into Google Form";
 }
 
-// Save quiz
-function saveQuiz(){
-  let data = document.getElementById("quizData").value;
-
-  if(data === ""){
-    alert("Paste questions first!");
-    return;
-  }
-
-  localStorage.setItem("quiz", data);
-
-  document.getElementById("saveMsg").innerText =
-  "✅ Quiz saved! Students can now see it.";
-}
-
-// demo graph
+// Demo graph
 let scores = [3,4,2,5,3];
 
 new Chart(document.getElementById("chart"),{
