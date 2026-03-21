@@ -1,66 +1,55 @@
-<!-- ================= STUDENT PAGE (index.html) ================= -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <title>Student Panel</title>
+
 <style>
-body{font-family:Arial;background:#eef2f3;padding:20px;text-align:center}
-.card{background:white;padding:20px;border-radius:10px;max-width:400px;margin:auto;box-shadow:0 4px 10px rgba(0,0,0,0.1)}
-button{padding:10px;margin:10px;border:none;border-radius:6px;background:#5a67d8;color:white;cursor:pointer}
+body{
+  font-family: Arial;
+  background: #eef2f3;
+  text-align: center;
+  padding: 30px;
+}
+
+.card{
+  background: white;
+  padding: 20px;
+  border-radius: 10px;
+  max-width: 400px;
+  margin: auto;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+
+button{
+  padding: 10px;
+  margin: 10px;
+  border: none;
+  border-radius: 6px;
+  background: #5a67d8;
+  color: white;
+  cursor: pointer;
+}
 </style>
 </head>
+
 <body>
 
 <h1>📚 Student Panel</h1>
 
 <div class="card">
+
 <h3>🧠 Attempt Quiz</h3>
-<button onclick="window.open('REPLACE_WITH_YOUR_GOOGLE_FORM_QUIZ_LINK')">Start Quiz</button>
+<button onclick="window.open('PASTE_YOUR_GOOGLE_FORM_QUIZ_LINK')">
+Start Quiz
+</button>
 
 <h3>💬 Give Feedback</h3>
-<button onclick="window.open('REPLACE_WITH_YOUR_FEEDBACK_FORM_LINK')">Fill Feedback</button>
+<button onclick="window.open('PASTE_YOUR_FEEDBACK_FORM_LINK')">
+Fill Feedback
+</button>
+
 </div>
-
-</body>
-</html>
-
-
-
-<!-- ================= TEACHER PAGE (teacher.html) ================= -->
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<title>Teacher Panel</title>
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<style>
-body{font-family:Arial;background:#dfe9f3;padding:20px;text-align:center}
-.card{background:white;padding:20px;border-radius:10px;max-width:500px;margin:auto;box-shadow:0 4px 10px rgba(0,0,0,0.1)}
-button{padding:10px;margin:10px;border:none;border-radius:6px;background:#5a67d8;color:white;cursor:pointer}
-</style>
-</head>
-<body>
-
-<h1>👩‍🏫 Teacher Dashboard</h1>
-
-<div class="card">
-<h3>📊 View Student Responses</h3>
-<button onclick="window.open('REPLACE_WITH_YOUR_SPREADSHEET_LINK')">Open Sheet</button>
-
-<h3>📈 Performance Overview (Demo)</h3>
-<canvas id="chart"></canvas>
-</div>
-
-<script>
-new Chart(document.getElementById("chart"),{
- type:'bar',
- data:{
-  labels:["Student 1","Student 2","Student 3"],
-  datasets:[{label:'Scores',data:[3,4,2]}]
- }
-});
-</script>
 
 </body>
 </html>
