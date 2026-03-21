@@ -1,215 +1,65 @@
+<!-- ================= STUDENT PAGE (index.html) ================= -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Smart Teaching System</title>
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<title>Student Panel</title>
 <style>
-body {
-  font-family: Arial;
-  background: linear-gradient(to right, #eef2f3, #dfe9f3);
-  margin: 0;
-  padding: 20px;
-}
-
-h1 { text-align: center; }
-
-.topbar {
-  text-align: center;
-  margin-bottom: 20px;
-}
-
-button {
-  padding: 10px;
-  border: none;
-  border-radius: 6px;
-  background: #5a67d8;
-  color: white;
-  cursor: pointer;
-  margin: 5px;
-}
-
-.container {
-  display: flex;
-  gap: 20px;
-}
-
-.card {
-  background: white;
-  padding: 20px;
-  border-radius: 12px;
-  width: 50%;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-}
-
-input {
-  width: 100%;
-  padding: 10px;
-  margin: 8px 0;
-  border-radius: 6px;
-  border: 1px solid #ccc;
-}
-
-.result {
-  font-weight: bold;
-}
+body{font-family:Arial;background:#eef2f3;padding:20px;text-align:center}
+.card{background:white;padding:20px;border-radius:10px;max-width:400px;margin:auto;box-shadow:0 4px 10px rgba(0,0,0,0.1)}
+button{padding:10px;margin:10px;border:none;border-radius:6px;background:#5a67d8;color:white;cursor:pointer}
 </style>
 </head>
-
 <body>
 
-<h1>📚 Smart AI Teaching & Feedback System</h1>
+<h1>📚 Student Panel</h1>
 
-<div class="topbar">
-  <button onclick="showTeacher()">Teacher Login (Password: 1234)</button>
-</div>
-
-<div class="container">
-
-<!-- Teacher Panel -->
-<div class="card" id="teacherPanel" style="display:none;">
-<h2>👩‍🏫 Teacher Panel</h2>
-
-<input type="text" id="topic" placeholder="Enter Topic">
-<button onclick="generateQuestions()">Generate Questions</button>
-
-<h3>📊 Performance</h3>
-<canvas id="chart"></canvas>
-<p id="teacherInsight"></p>
-
-<h3>📝 View Feedback</h3>
-<button onclick="window.open('https://docs.google.com/spreadsheets/d/1oelarAPB7g7YQSQcUOKlyFsYXB5FtnCbgH0QC0qdoLE/edit?usp=sharing')">
-View Feedback
-</button>
-</div>
-
-<!-- Student Panel -->
 <div class="card">
-<h2>👨‍🎓 Student Panel</h2>
+<h3>🧠 Attempt Quiz</h3>
+<button onclick="window.open('REPLACE_WITH_YOUR_GOOGLE_FORM_QUIZ_LINK')">Start Quiz</button>
 
-<div id="quiz"></div>
-<button onclick="submitTest()">Submit Test</button>
-
-<p class="result" id="score"></p>
-<p class="result" id="analysis"></p>
-
-<h3>💬 Feedback</h3>
-<button onclick="window.open('https://forms.gle/fzY3YDtUxTrUS5Co6')">
-Fill Feedback Form
-</button>
+<h3>💬 Give Feedback</h3>
+<button onclick="window.open('REPLACE_WITH_YOUR_FEEDBACK_FORM_LINK')">Fill Feedback</button>
 </div>
 
+</body>
+</html>
+
+
+
+<!-- ================= TEACHER PAGE (teacher.html) ================= -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Teacher Panel</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<style>
+body{font-family:Arial;background:#dfe9f3;padding:20px;text-align:center}
+.card{background:white;padding:20px;border-radius:10px;max-width:500px;margin:auto;box-shadow:0 4px 10px rgba(0,0,0,0.1)}
+button{padding:10px;margin:10px;border:none;border-radius:6px;background:#5a67d8;color:white;cursor:pointer}
+</style>
+</head>
+<body>
+
+<h1>👩‍🏫 Teacher Dashboard</h1>
+
+<div class="card">
+<h3>📊 View Student Responses</h3>
+<button onclick="window.open('REPLACE_WITH_YOUR_SPREADSHEET_LINK')">Open Sheet</button>
+
+<h3>📈 Performance Overview (Demo)</h3>
+<canvas id="chart"></canvas>
 </div>
 
 <script>
-let questions = [];
-let scores = [];
-
-function showTeacher(){
-  let pass = prompt("Enter Teacher Password (Hint: 1234)");
-  if(pass === "1234"){
-    document.getElementById("teacherPanel").style.display = "block";
-  } else {
-    alert("Wrong Password");
-  }
-}
-
-function generateQuestions(){
-  let topic = document.getElementById("topic").value;
-
-  if(topic === ""){
-    alert("Please enter topic!");
-    return;
-  }
-
-  questions = [
-    {
-      q: `What is ${topic}?`,
-      options: ["Definition", "Formula", "Graph", "None"],
-      a: "Definition"
-    },
-    {
-      q: `Which is related to ${topic}?`,
-      options: ["Concept A", "Concept B", "Concept C", "Concept D"],
-      a: "Concept B"
-    },
-    {
-      q: `${topic} is mainly used for?`,
-      options: ["Analysis", "Storage", "Design", "Calculation"],
-      a: "Analysis"
-    },
-    {
-      q: `Choose correct statement about ${topic}`,
-      options: ["True statement", "Wrong", "Irrelevant", "None"],
-      a: "True statement"
-    },
-    {
-      q: `Main purpose of ${topic}?`,
-      options: ["Understanding", "Calculation", "Logic building", "All"],
-      a: "All"
-    }
-  ];
-
-  let html = "";
-
-  questions.forEach((item,i)=>{
-    html += `<p><b>${item.q}</b></p>`;
-    
-    item.options.forEach(opt=>{
-      html += `<input type="radio" name="q${i}" value="${opt}"> ${opt}<br>`;
-    });
-
-    html += "<br>";
-  });
-
-  document.getElementById("quiz").innerHTML = html;
-}
-
-function submitTest(){
-  if(questions.length === 0){
-    alert("No questions generated!");
-    return;
-  }
-
-  let score = 0;
-
-  questions.forEach((item,i)=>{
-    let ans = document.querySelector(`input[name=q${i}]:checked`);
-    if(ans && ans.value === item.a){
-      score++;
-    }
-  });
-
-  scores.push(score);
-
-  document.getElementById("score").innerText = "Score: " + score;
-
-  if(score < 3){
-    document.getElementById("analysis").innerText = "⚠️ Need improvement";
-  } else {
-    document.getElementById("analysis").innerText = "✅ Good understanding";
-  }
-
-  updateChart();
-}
-
-function updateChart(){
-  new Chart(document.getElementById("chart"), {
-    type: 'bar',
-    data: {
-      labels: scores.map((_,i)=>"Student "+(i+1)),
-      datasets: [{
-        label: 'Scores',
-        data: scores
-      }]
-    }
-  });
-
-  let weak = (scores.filter(s=>s<3).length / scores.length)*100;
-
-  document.getElementById("teacherInsight").innerText =
-    weak.toFixed(0) + "% students need improvement";
-}
+new Chart(document.getElementById("chart"),{
+ type:'bar',
+ data:{
+  labels:["Student 1","Student 2","Student 3"],
+  datasets:[{label:'Scores',data:[3,4,2]}]
+ }
+});
 </script>
 
 </body>
