@@ -6,23 +6,23 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <style>
-body {
+body{
   font-family: Arial;
-  background: linear-gradient(to right, #dfe9f3, #eef2f3);
-  padding: 20px;
+  background: #dfe9f3;
   text-align: center;
+  padding: 30px;
 }
 
-.card {
+.card{
   background: white;
   padding: 20px;
-  border-radius: 12px;
+  border-radius: 10px;
   max-width: 500px;
   margin: auto;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
 }
 
-button {
+button{
   padding: 10px;
   margin: 10px;
   border: none;
@@ -31,13 +31,9 @@ button {
   color: white;
   cursor: pointer;
 }
-
-h1 {
-  margin-bottom: 20px;
-}
 </style>
-
 </head>
+
 <body>
 
 <h1>👩‍🏫 Teacher Dashboard</h1>
@@ -45,8 +41,13 @@ h1 {
 <div class="card">
 
 <h3>📊 View Student Responses</h3>
-<button onclick="window.open('https://docs.google.com/spreadsheets/d/1oelarAPB7g7YQSQcUOKlyFsYXB5FtnCbgH0QC0qdoLE/edit?usp=sharing')">
+<button onclick="window.open('PASTE_YOUR_SPREADSHEET_LINK')">
 Open Responses Sheet
+</button>
+
+<h3>🤖 Generate Questions using AI</h3>
+<button onclick="window.open('https://chat.openai.com')">
+Generate MCQ
 </button>
 
 <h3>📈 Performance Overview</h3>
@@ -58,25 +59,20 @@ Open Responses Sheet
 
 <script>
 
-// Demo data (graph ke liye)
-let scores = [3, 4, 2, 5, 3];
+let scores = [3,4,2,5,3];
 
-new Chart(document.getElementById("chart"), {
-  type: 'bar',
-  data: {
-    labels: ["Student 1", "Student 2", "Student 3", "Student 4", "Student 5"],
-    datasets: [{
-      label: 'Scores',
-      data: scores
-    }]
-  }
+new Chart(document.getElementById("chart"),{
+ type:'bar',
+ data:{
+  labels:["S1","S2","S3","S4","S5"],
+  datasets:[{label:'Scores',data:scores}]
+ }
 });
 
-// Simple analysis
-let weak = (scores.filter(s => s < 3).length / scores.length) * 100;
+let weak = (scores.filter(s=>s<3).length / scores.length)*100;
 
 document.getElementById("insight").innerText =
-  weak.toFixed(0) + "% students need improvement";
+weak.toFixed(0) + "% students need improvement";
 
 </script>
 
