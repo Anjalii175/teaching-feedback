@@ -61,7 +61,7 @@ input {
 <h1>📚 Smart AI Teaching & Feedback System</h1>
 
 <div class="topbar">
-  <button onclick="showTeacher()">Login as Teacher</button>
+  <button onclick="showTeacher()">Teacher Login (Password: 1234)</button>
 </div>
 
 <div class="container">
@@ -78,7 +78,7 @@ input {
 <p id="teacherInsight"></p>
 
 <h3>📝 View Feedback</h3>
-<button onclick="window.open('https://docs.google.com/spreadsheets/d/182Gk-lOParvF65dYH_ZPEDnm7aNXczHE4JO5JsOrc1U')">
+<button onclick="window.open('https://docs.google.com/spreadsheets/d/1oelarAPB7g7YQSQcUOKlyFsYXB5FtnCbgH0QC0qdoLE/edit?usp=sharing')">
 View Feedback
 </button>
 </div>
@@ -94,7 +94,7 @@ View Feedback
 <p class="result" id="analysis"></p>
 
 <h3>💬 Feedback</h3>
-<button onclick="window.open('https://forms.gle/iNEAdfn5iBWnKDNM8')">
+<button onclick="window.open('https://forms.gle/fzY3YDtUxTrUS5Co6')">
 Fill Feedback Form
 </button>
 </div>
@@ -106,7 +106,7 @@ let questions = [];
 let scores = [];
 
 function showTeacher(){
-  let pass = prompt("Enter Teacher Password");
+  let pass = prompt("Enter Teacher Password (Hint: 1234)");
   if(pass === "1234"){
     document.getElementById("teacherPanel").style.display = "block";
   } else {
@@ -118,25 +118,48 @@ function generateQuestions(){
   let topic = document.getElementById("topic").value;
 
   if(topic === ""){
-    alert("Please enter topic first!");
+    alert("Please enter topic!");
     return;
   }
 
   questions = [
-    {q: `What is ${topic}?`, a:"A"},
-    {q: `Which formula is used in ${topic}?`, a:"B"},
-    {q: `Where is ${topic} applied?`, a:"C"},
-    {q: `Identify correct statement about ${topic}`, a:"A"},
-    {q: `What is main use of ${topic}?`, a:"B"}
+    {
+      q: `What is ${topic}?`,
+      options: ["Definition", "Formula", "Graph", "None"],
+      a: "Definition"
+    },
+    {
+      q: `Which is related to ${topic}?`,
+      options: ["Concept A", "Concept B", "Concept C", "Concept D"],
+      a: "Concept B"
+    },
+    {
+      q: `${topic} is mainly used for?`,
+      options: ["Analysis", "Storage", "Design", "Calculation"],
+      a: "Analysis"
+    },
+    {
+      q: `Choose correct statement about ${topic}`,
+      options: ["True statement", "Wrong", "Irrelevant", "None"],
+      a: "True statement"
+    },
+    {
+      q: `Main purpose of ${topic}?`,
+      options: ["Understanding", "Calculation", "Logic building", "All"],
+      a: "All"
+    }
   ];
 
   let html = "";
 
   questions.forEach((item,i)=>{
-    html += `<p>${item.q}</p>
-    <input type="radio" name="q${i}" value="A"> Option A
-    <input type="radio" name="q${i}" value="B"> Option B
-    <input type="radio" name="q${i}" value="C"> Option C<br><br>`;
+    html += `<p><b>${item.q}</b></p>`;
+    
+    item.options.forEach(opt=>{
+      html += `<input type="radio" name="q${i}" value="${opt}"> ${opt}<br>`;
+    });
+
+    html += "<br>";
   });
 
   document.getElementById("quiz").innerHTML = html;
@@ -162,7 +185,7 @@ function submitTest(){
   document.getElementById("score").innerText = "Score: " + score;
 
   if(score < 3){
-    document.getElementById("analysis").innerText = "⚠️ You need to revise this topic";
+    document.getElementById("analysis").innerText = "⚠️ Need improvement";
   } else {
     document.getElementById("analysis").innerText = "✅ Good understanding";
   }
@@ -171,8 +194,6 @@ function submitTest(){
 }
 
 function updateChart(){
-  let avg = scores.reduce((a,b)=>a+b,0)/scores.length;
-
   new Chart(document.getElementById("chart"), {
     type: 'bar',
     data: {
