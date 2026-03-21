@@ -117,25 +117,37 @@ function showTeacher(){
 function generateQuestions(){
   let topic = document.getElementById("topic").value;
 
+  if(topic === ""){
+    alert("Please enter topic first!");
+    return;
+  }
+
   questions = [
-    {q: topic + " basic concept?", a:"A"},
-    {q: topic + " formula related?", a:"B"},
-    {q: topic + " application?", a:"C"}
+    {q: `What is ${topic}?`, a:"A"},
+    {q: `Which formula is used in ${topic}?`, a:"B"},
+    {q: `Where is ${topic} applied?`, a:"C"},
+    {q: `Identify correct statement about ${topic}`, a:"A"},
+    {q: `What is main use of ${topic}?`, a:"B"}
   ];
 
   let html = "";
 
   questions.forEach((item,i)=>{
     html += `<p>${item.q}</p>
-    <input type="radio" name="q${i}" value="A"> A
-    <input type="radio" name="q${i}" value="B"> B
-    <input type="radio" name="q${i}" value="C"> C<br>`;
+    <input type="radio" name="q${i}" value="A"> Option A
+    <input type="radio" name="q${i}" value="B"> Option B
+    <input type="radio" name="q${i}" value="C"> Option C<br><br>`;
   });
 
   document.getElementById("quiz").innerHTML = html;
 }
 
 function submitTest(){
+  if(questions.length === 0){
+    alert("No questions generated!");
+    return;
+  }
+
   let score = 0;
 
   questions.forEach((item,i)=>{
@@ -149,8 +161,8 @@ function submitTest(){
 
   document.getElementById("score").innerText = "Score: " + score;
 
-  if(score < 2){
-    document.getElementById("analysis").innerText = "⚠️ Need improvement";
+  if(score < 3){
+    document.getElementById("analysis").innerText = "⚠️ You need to revise this topic";
   } else {
     document.getElementById("analysis").innerText = "✅ Good understanding";
   }
@@ -172,10 +184,10 @@ function updateChart(){
     }
   });
 
-  let weak = (scores.filter(s=>s<2).length / scores.length)*100;
+  let weak = (scores.filter(s=>s<3).length / scores.length)*100;
 
   document.getElementById("teacherInsight").innerText =
-    weak.toFixed(0) + "% students are weak in this topic";
+    weak.toFixed(0) + "% students need improvement";
 }
 </script>
 
