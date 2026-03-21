@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Teacher Panel</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<style>
+body {
+  font-family: Arial;
+  background: linear-gradient(to right, #dfe9f3, #eef2f3);
+  padding: 20px;
+  text-align: center;
+}
+
+.card {
+  background: white;
+  padding: 20px;
+  border-radius: 12px;
+  max-width: 500px;
+  margin: auto;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+button {
+  padding: 10px;
+  margin: 10px;
+  border: none;
+  border-radius: 6px;
+  background: #5a67d8;
+  color: white;
+  cursor: pointer;
+}
+
+h1 {
+  margin-bottom: 20px;
+}
+</style>
+
+</head>
+<body>
+
+<h1>👩‍🏫 Teacher Dashboard</h1>
+
+<div class="card">
+
+<h3>📊 View Student Responses</h3>
+<button onclick="window.open('PASTE_YOUR_NEW_SPREADSHEET_LINK_HERE')">
+Open Responses Sheet
+</button>
+
+<h3>📈 Performance Overview</h3>
+<canvas id="chart"></canvas>
+
+<p id="insight"></p>
+
+</div>
+
+<script>
+
+// Demo data (graph ke liye)
+let scores = [3, 4, 2, 5, 3];
+
+new Chart(document.getElementById("chart"), {
+  type: 'bar',
+  data: {
+    labels: ["Student 1", "Student 2", "Student 3", "Student 4", "Student 5"],
+    datasets: [{
+      label: 'Scores',
+      data: scores
+    }]
+  }
+});
+
+// Simple analysis
+let weak = (scores.filter(s => s < 3).length / scores.length) * 100;
+
+document.getElementById("insight").innerText =
+  weak.toFixed(0) + "% students need improvement";
+
+</script>
+
+</body>
+</html>
