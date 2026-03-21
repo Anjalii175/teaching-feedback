@@ -23,7 +23,7 @@ body{
 }
 
 button{
-  padding: 12px;
+  padding: 10px;
   margin: 10px;
   border: none;
   border-radius: 6px;
@@ -32,7 +32,7 @@ button{
   cursor: pointer;
 }
 
-input{
+input, textarea{
   padding: 10px;
   width: 80%;
   margin: 10px;
@@ -46,14 +46,12 @@ input{
 
 <div class="card">
 
-<p><b>AI Feature:</b> Generate topic-based MCQs using AI</p>
-
 <h3>📊 View Responses</h3>
 <button onclick="window.open('https://docs.google.com/spreadsheets/d/1oelarAPB7g7YQSQcUOKlyFsYXB5FtnCbgH0QC0qdoLE/edit?usp=sharing')">
 Open Sheet
 </button>
 
-<h3>🤖 Generate AI Questions</h3>
+<h3>🤖 Generate Questions (AI)</h3>
 
 <input type="text" id="topic" placeholder="Enter topic">
 
@@ -63,7 +61,17 @@ Open Sheet
 
 <p id="note"></p>
 
-<h3>📈 Performance Overview</h3>
+<h3>📝 Paste & Save Quiz</h3>
+
+<textarea id="quizData" rows="8" placeholder="Paste AI questions here"></textarea>
+
+<br>
+
+<button onclick="saveQuiz()">Save Quiz</button>
+
+<p id="saveMsg"></p>
+
+<h3>📈 Performance</h3>
 <canvas id="chart"></canvas>
 
 <p id="insight"></p>
@@ -72,6 +80,7 @@ Open Sheet
 
 <script>
 
+// AI open
 function generateAI(){
   let topic = document.getElementById("topic").value;
 
@@ -84,7 +93,22 @@ function generateAI(){
   window.open(url);
 
   document.getElementById("note").innerText =
-  "👉 Copy questions from AI and add them to Google Form";
+  "👉 Copy questions from AI and paste below";
+}
+
+// Save quiz
+function saveQuiz(){
+  let data = document.getElementById("quizData").value;
+
+  if(data === ""){
+    alert("Paste questions first!");
+    return;
+  }
+
+  localStorage.setItem("quiz", data);
+
+  document.getElementById("saveMsg").innerText =
+  "✅ Quiz saved! Students can now see it.";
 }
 
 // demo graph
