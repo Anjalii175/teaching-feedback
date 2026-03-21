@@ -7,29 +7,34 @@
 <style>
 body{
   font-family: Arial;
-  background: #eef2f3;
+  background: linear-gradient(to right, #667eea, #764ba2);
   text-align: center;
   padding: 30px;
+  color: white;
 }
 
 .card{
   background: white;
+  color: black;
   padding: 20px;
-  border-radius: 10px;
+  border-radius: 12px;
   max-width: 400px;
   margin: auto;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+}
+
+select, button{
+  padding: 10px;
+  margin: 10px;
+  width: 80%;
+  border-radius: 6px;
+  border: none;
 }
 
 button{
-  padding: 12px;
-  margin: 10px;
-  border: none;
-  border-radius: 6px;
   background: #5a67d8;
   color: white;
   cursor: pointer;
-  width: 80%;
 }
 </style>
 </head>
@@ -40,19 +45,37 @@ button{
 
 <div class="card">
 
-<p>🤖 AI-powered quiz & feedback system</p>
+<h3>🧠 Select Topic</h3>
 
-<h3>🧠 Attempt Quiz</h3>
-<button onclick="window.open('https://forms.gle/YnK837y3iqVDbczX8')">
-Start Quiz
-</button>
+<select id="topic">
+  <option value="">-- Select Topic --</option>
 
-<h3>💬 Give Feedback</h3>
+  <!-- 👇 YAHAN LINKS DAALNE HAIN -->
+  <option value="https://forms.gle/YnK837y3iqVDbczX8">Tree Topology</option>
+
+</select>
+
+<button onclick="openQuiz()">Start Quiz</button>
+
+<h3>💬 Feedback</h3>
 <button onclick="window.open('https://forms.gle/fzY3YDtUxTrUS5Co6')">
 Fill Feedback
 </button>
 
 </div>
+
+<script>
+function openQuiz(){
+  let link = document.getElementById("topic").value;
+
+  if(link === ""){
+    alert("Please select topic!");
+    return;
+  }
+
+  window.open(link);
+}
+</script>
 
 </body>
 </html>
