@@ -20,18 +20,14 @@ body{
   border-radius: 12px;
   max-width: 400px;
   margin: auto;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
 }
 
-select, button{
-  padding: 10px;
+button{
+  padding: 12px;
   margin: 10px;
   width: 80%;
   border-radius: 6px;
   border: none;
-}
-
-button{
   background: #5a67d8;
   color: white;
   cursor: pointer;
@@ -45,37 +41,19 @@ button{
 
 <div class="card">
 
-<h3>🧠 Select Topic</h3>
+<p>🤖 AI Powered Quiz System</p>
 
-<select id="topic">
-  <option value="">-- Select Topic --</option>
-
-  <!-- 👇 YAHAN LINKS DAALNE HAIN -->
-  <option value="https://forms.gle/YnK837y3iqVDbczX8">Tree Topology</option>
-
-</select>
-
-<button onclick="openQuiz()">Start Quiz</button>
+<h3>🧠 Attempt Quiz</h3>
+<button onclick="window.open('https://forms.gle/YnK837y3iqVDbczX8')">
+Start Quiz
+</button>
 
 <h3>💬 Feedback</h3>
 <button onclick="window.open('https://forms.gle/fzY3YDtUxTrUS5Co6')">
-Fill Feedback
+Give Feedback
 </button>
 
 </div>
-
-<script>
-function openQuiz(){
-  let link = document.getElementById("topic").value;
-
-  if(link === ""){
-    alert("Please select topic!");
-    return;
-  }
-
-  window.open(link);
-}
-</script>
 
 </body>
 </html>
