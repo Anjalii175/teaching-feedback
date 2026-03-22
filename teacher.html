@@ -1,9 +1,7 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-<meta charset="UTF-8">
 <title>Teacher Dashboard</title>
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <style>
 body{
@@ -13,7 +11,6 @@ body{
   padding: 30px;
   color: white;
 }
-
 .card{
   background: white;
   color: black;
@@ -21,9 +18,7 @@ body{
   border-radius: 12px;
   max-width: 500px;
   margin: auto;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
 }
-
 input, button{
   padding: 10px;
   margin: 10px;
@@ -31,13 +26,13 @@ input, button{
   border-radius: 6px;
   border: none;
 }
-
 button{
   background: #5a67d8;
   color: white;
   cursor: pointer;
 }
 </style>
+
 </head>
 
 <body>
@@ -46,12 +41,7 @@ button{
 
 <div class="card">
 
-<h3>📊 View Responses</h3>
-<button onclick="window.open('https://docs.google.com/spreadsheets/d/1oelarAPB7g7YQSQcUOKlyFsYXB5FtnCbgH0QC0qdoLE/edit?usp=sharing')">
-Open Responses
-</button>
-
-<h3>🤖 Generate Questions (AI)</h3>
+<h3>🤖 Generate Questions</h3>
 
 <input type="text" id="topic" placeholder="Enter topic">
 
@@ -59,15 +49,19 @@ Open Responses
 
 <p id="note"></p>
 
-<h3>📈 Class Performance</h3>
-<canvas id="chart"></canvas>
+<h3>📝 Create Quiz Form</h3>
+<button onclick="window.open('https://forms.google.com')">
+Open Google Forms
+</button>
 
-<p id="insight"></p>
+<h3>📊 View Responses</h3>
+<button onclick="window.open('https://docs.google.com/spreadsheets/d/1oelarAPB7g7YQSQcUOKlyFsYXB5FtnCbgH0QC0qdoLE/edit?usp=sharing')">
+View Responses
+</button>
 
 </div>
 
 <script>
-
 function generateAI(){
   let topic = document.getElementById("topic").value;
 
@@ -76,29 +70,12 @@ function generateAI(){
     return;
   }
 
-  let url = `https://chat.openai.com/?q=Generate 5 MCQs on ${topic} with options and answers`;
+  let url = `https://chat.openai.com/?q=Generate 5 MCQs on ${topic} with answers`;
   window.open(url);
 
   document.getElementById("note").innerText =
   "👉 Copy questions → paste into Google Form";
 }
-
-// Demo graph
-let scores = [3,4,2,5,3];
-
-new Chart(document.getElementById("chart"),{
- type:'bar',
- data:{
-  labels:["S1","S2","S3","S4","S5"],
-  datasets:[{label:'Scores',data:scores}]
- }
-});
-
-let weak = (scores.filter(s=>s<3).length / scores.length)*100;
-
-document.getElementById("insight").innerText =
-weak.toFixed(0) + "% students need improvement";
-
 </script>
 
 </body>
